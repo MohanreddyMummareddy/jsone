@@ -11,24 +11,24 @@ Think of jsone as **the Markdown of structured data**.
 
 ## Table of Contents
 
-- #problem
-- #solution
-- #key-features
-- #design-principles
-- #how-it-works
-- #optional-metadata
-- #file-format-overview
-- #use-cases
-- #compatibility
-- #project-status
-- #roadmap
-- #repository-structure
-- #specification
-- #versioning
-- #contributing
-- #security-considerations
-- #faq
-- #license
+- # problem
+- # solution
+- # key-features
+- # design-principles
+- # how-it-works
+- # optional-metadata
+- # file-format-overview
+- # use-cases
+- # compatibility
+- # project-status
+- # roadmap
+- # repository-structure
+- # specification
+- # versioning
+- # contributing
+- # security-considerations
+- # faq
+- # license
 
 ---
 
