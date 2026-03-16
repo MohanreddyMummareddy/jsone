@@ -1,0 +1,26 @@
+{
+  "$meta": {
+    "title": "Orders"
+  },
+  "data": {
+    "orders": [
+      {
+        "orderId": "ORD-1001",
+        "customer": {
+          "id": 1,
+          "name": "Ravi"
+        },
+        "items": [
+          { "sku": "SKU-1", "qty": 2, "price": 3000 },
+          { "sku": "SKU-2", "qty": 1, "price": 6500 }
+        ],
+        "total": {
+          "amount": 12500,
+          "currency": "INR"
+        },
+        "status": "PAID",
+        "createdAt": "2026-03-10T09:00:00Z"
+      }
+    ]
+  }
+}

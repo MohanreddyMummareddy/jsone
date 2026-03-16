@@ -1,0 +1,29 @@
+{
+  "$meta": {
+    "title": "Users"
+  },
+  "data": [
+    {
+      "id": 1,
+      "name": "Ravi",
+      "email": "ravi@example.com",
+      "profile": {
+        "role": "Admin",
+        "city": "Chennai"
+      },
+      "skills": ["Python", "FastAPI", "GenAI"],
+      "createdAt": "2026-03-01T10:15:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Anita",
+      "email": "anita@example.com",
+      "profile": {
+        "role": "User",
+        "city": "Bangalore"
+      },
+      "skills": ["React", "TypeScript"],
+      "createdAt": "2026-03-05T14:40:00Z"
+    }
+  ]
+}
