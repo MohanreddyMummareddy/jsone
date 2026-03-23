@@ -46,6 +46,7 @@ function init(): void {
   const treeContainer = $('#treeContainer');
   const tableSelector = $('#tableSelector');
   const downloadJsoneBtn = $('#downloadJsoneBtn');
+  const homeBtn = $('#homeBtn');
 
   console.log('[init] DOM elements found:', {
     fileInput: !!fileInput,
@@ -56,7 +57,8 @@ function init(): void {
     tableContainer: !!tableContainer,
     treeContainer: !!treeContainer,
     tableSelector: !!tableSelector,
-    downloadJsoneBtn: !!downloadJsoneBtn
+    downloadJsoneBtn: !!downloadJsoneBtn,
+    homeBtn: !!homeBtn
   });
 
   if (!fileInput) {
@@ -107,6 +109,32 @@ function init(): void {
       // Render tree view when shown
       if (currentState) {
         renderTreeView(treeContainer, currentJsone.data);
+      }
+    });
+  }
+
+  // Home button - return to landing page
+  if (homeBtn) {
+    console.log('[init] Setting up home button');
+    on(homeBtn, 'click', () => {
+      console.log('[init] Home button clicked');
+      const landingSection = document.getElementById('landingSection');
+      const appSection = document.getElementById('appSection');
+      if (landingSection && appSection) {
+        landingSection.style.display = 'flex';
+        appSection.style.display = 'none';
+        // Reset form
+        if (fileInput) {
+          fileInput.value = '';
+        }
+        // Reset state
+        currentState = null;
+        currentJsone = null;
+        if (tableContainer) {
+          clear(tableContainer);
+          setText(tableContainer, '📁 Load a .jsone or .json file to view');
+        }
+        console.log('[init] Returned to landing page');
       }
     });
   }

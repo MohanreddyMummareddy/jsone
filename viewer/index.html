@@ -516,7 +516,12 @@
       <!-- App Section (Hidden initially) -->
       <div class="app-section" id="appSection">
         <div class="header">
-        <h1>jsone Viewer</h1>
+          <div style="display: flex; align-items: center; gap: 16px; justify-content: space-between; margin-bottom: 16px;">
+            <button id="homeBtn" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+              ← Home
+            </button>
+            <h1 style="margin: 0; flex: 1;">jsone Viewer</h1>
+          </div>
         <div class="controls">
           <div class="file-input-wrapper">
             <input type="file" id="fileInput" accept=".json,.jsone" />
