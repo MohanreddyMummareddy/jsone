@@ -11,6 +11,13 @@ export default defineConfig({
       output: {
         manualChunks: undefined,
       },
+      onwarn(warning, warn) {
+        // Suppress rollupOptions.external warning
+        if (warning.code === 'UNRESOLVED_EXTERNAL') {
+          return;
+        }
+        warn(warning);
+      },
     },
   },
 });
