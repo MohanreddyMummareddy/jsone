@@ -1,0 +1,77 @@
+{
+  "name": "vscode-jsone",
+  "displayName": "jsone — JSON Enhanced",
+  "description": "View jsone files as interactive tables with search, sort, and export",
+  "version": "0.4.0",
+  "publisher": "jsone",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Viewers",
+    "Other"
+  ],
+  "keywords": [
+    "json",
+    "table",
+    "viewer",
+    "data",
+    "export",
+    "csv"
+  ],
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/jsone"
+  },
+  "activationEvents": [
+    "onCustomEditor:jsone.tableEditor"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "jsone.tableEditor",
+        "displayName": "jsone Table",
+        "selector": [
+          {
+            "filenamePattern": "*.jsone"
+          },
+          {
+            "filenamePattern": "*.json",
+            "excludePattern": "**/node_modules/**"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "commands": [
+      {
+        "command": "jsone.copyCSV",
+        "title": "Copy CSV",
+        "category": "jsone"
+      },
+      {
+        "command": "jsone.toggleColumns",
+        "title": "Toggle Columns",
+        "category": "jsone"
+      },
+      {
+        "command": "jsone.toggleTreeView",
+        "title": "Toggle Tree View",
+        "category": "jsone"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "vscode:prepublish": "npm run build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
+  }
+}

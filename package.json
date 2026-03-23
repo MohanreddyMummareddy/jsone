@@ -1,0 +1,36 @@
+{
+  "name": "jsone",
+  "version": "0.4.0",
+  "description": "JSON Enhanced — auto-render arrays of objects as tables",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/core",
+    "viewer",
+    "cli",
+    "extensions/vscode-jsone"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=packages/core && npm run build --workspace=viewer && npm run build --workspace=cli && npm run build --workspace=extensions/vscode-jsone",
+    "build:core": "npm run build --workspace=packages/core",
+    "build:viewer": "npm run build --workspace=viewer",
+    "build:cli": "npm run build --workspace=cli",
+    "build:ext": "npm run build --workspace=extensions/vscode-jsone",
+    "dev:viewer": "npm run dev --workspace=viewer",
+    "test": "npm run test --workspace=packages/core",
+    "test:watch": "npm run test:watch --workspace=packages/core",
+    "clean": "rm -rf packages/core/dist viewer/dist cli/dist extensions/vscode-jsone/dist",
+    "cli": "node cli/dist/cli.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@jsone/cli",
+  "version": "0.4.0",
+  "description": "jsone CLI — command-line tool for viewing and converting jsone files",
+  "type": "module",
+  "bin": {
+    "jsone": "./bin/jsone.mjs"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@jsone/core": "../packages/core"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
