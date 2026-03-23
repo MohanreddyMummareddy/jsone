@@ -7,16 +7,20 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    reportCompressedSize: false,
     rollupOptions: {
       output: {
         manualChunks: undefined,
       },
-      onwarn(warning, warn) {
-        // Suppress rollupOptions.external warning
+      onwarn(warning) {
+        // Silently ignore unresolved external warnings
         if (warning.code === 'UNRESOLVED_EXTERNAL') {
           return;
         }
-        warn(warning);
+        // For other warnings, only log, don't fail the build
+        if (warning.message) {
+          console.warn(`Vite warning: ${warning.message}`);
+        }
       },
     },
   },
