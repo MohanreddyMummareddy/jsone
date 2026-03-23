@@ -2,6 +2,8 @@
  * Main entry point for jsone viewer
  */
 
+console.log('[main.ts] Module loading...');
+
 import { parseJsone, tableFromJsone, findAllTableSources, type TableSource } from '@mummareddy_mohanreddy/jsone-core';
 import {
   $,
@@ -26,12 +28,15 @@ import {
   showMessage,
 } from './table';
 
+console.log('[main.ts] Imports completed successfully');
+
 let currentState: any = null;
 let currentJsone: any = null;
 let availableTables: TableSource[] = [];
 let selectedTableIndex = 0;
 
 function init(): void {
+  console.log('[init] Starting initialization');
   const fileInput = $('#fileInput') as HTMLInputElement;
   const searchInput = $('#searchInput') as HTMLInputElement;
   const tableViewBtn = $('#tableViewBtn');
@@ -42,19 +47,44 @@ function init(): void {
   const tableSelector = $('#tableSelector');
   const downloadJsoneBtn = $('#downloadJsoneBtn');
 
-  if (!fileInput) return;
+  console.log('[init] DOM elements found:', {
+    fileInput: !!fileInput,
+    searchInput: !!searchInput,
+    tableViewBtn: !!tableViewBtn,
+    treeViewBtn: !!treeViewBtn,
+    copyCSVBtn: !!copyCSVBtn,
+    tableContainer: !!tableContainer,
+    treeContainer: !!treeContainer,
+    tableSelector: !!tableSelector,
+    downloadJsoneBtn: !!downloadJsoneBtn
+  });
+
+  if (!fileInput) {
+    console.error('[init] fileInput not found, aborting');
+    return;
+  }
 
   // File input handler
   on(fileInput, 'change', async (e) => {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0];
-    if (!file) return;
+    console.log('[main.ts] File input changed');
+    console.log('[main.ts] Files:', input.files);
+    console.log('[main.ts] First file:', file);
+    if (!file) {
+      console.error('[main.ts] No file selected');
+      return;
+    }
 
     try {
+      console.log('[main.ts] Reading file...');
       const text = await file.text();
+      console.log('[main.ts] File text length:', text.length);
+      console.log('[main.ts] First 100 chars:', text.substring(0, 100));
       processJsonData(text);
       showMessage('File loaded successfully!', 'success');
     } catch (err) {
+      console.error('[main.ts] Error reading file:', err);
       showMessage(`Error reading file: ${err instanceof Error ? err.message : String(err)}`, 'error');
     }
   });
@@ -200,36 +230,60 @@ function downloadAsJsone(): void {
 
 function processJsonData(jsonStr: string): void {
   try {
+    console.log('[processJsonData] Starting with JSON string length:', jsonStr.length);
+    console.log('[processJsonData] First 100 chars:', jsonStr.substring(0, 100));
+    
     const parsed = parseJsone(jsonStr);
+    console.log('[processJsonData] Parsed successfully:', parsed);
     currentJsone = parsed;
+    
     const tableContainer = $('#tableContainer');
     const tableViewBtn = $('#tableViewBtn');
     const treeViewBtn = $('#treeViewBtn');
     const downloadJsoneBtn = $('#downloadJsoneBtn') as HTMLButtonElement;
+    
+    console.log('[processJsonData] DOM elements found:', {
+      tableContainer: !!tableContainer,
+      tableViewBtn: !!tableViewBtn,
+      treeViewBtn: !!treeViewBtn,
+      downloadJsoneBtn: !!downloadJsoneBtn
+    });
 
     // Find all tabular representations
+    console.log('[processJsonData] Calling findAllTableSources...');
     availableTables = findAllTableSources(parsed.data);
+    console.log('[processJsonData] Available tables:', availableTables.length, availableTables);
 
     // Always get a table (coerced if needed)
+    console.log('[processJsonData] Calling tableFromJsone...');
     const table = tableFromJsone(parsed.data);
+    console.log('[processJsonData] Table result:', table);
+    
     currentState = createTableState(table);
+    console.log('[processJsonData] Current state created:', currentState);
 
     // Show table information if multiple tables found
     if (availableTables.length > 1) {
+      console.log('[processJsonData] Multiple tables found:', availableTables.length);
       showMessage(`Found ${availableTables.length} tables in this JSON! Use dropdown to switch.`, 'success');
     }
 
     // Render the table
     if (tableContainer) {
+      console.log('[processJsonData] Rendering table...');
       renderTable(tableContainer, currentState, (key, value) => {
         showCellModal(key, value);
       });
+      console.log('[processJsonData] Table rendered');
+    } else {
+      console.error('[processJsonData] tableContainer not found!');
     }
 
     // Show table by default
     if (tableContainer) {
       const treeContainer = $('#treeContainer');
       if (treeContainer) {
+        console.log('[processJsonData] Showing table, hiding tree');
         show(tableContainer);
         hide(treeContainer);
         if (tableViewBtn && treeViewBtn) {
@@ -242,16 +296,28 @@ function processJsonData(jsonStr: string): void {
     // Enable download button
     if (downloadJsoneBtn) {
       downloadJsoneBtn.disabled = false;
+      console.log('[processJsonData] Download button enabled');
     }
+    
+    console.log('[processJsonData] Processing complete');
   } catch (err) {
-    showMessage(`Error: ${err instanceof Error ? err.message : String(err)}`, 'error');
+    console.error('[processJsonData] Error:', err);
+    const errMsg = err instanceof Error ? err.message : String(err);
+    console.error('[processJsonData] Error message:', errMsg);
+    console.error('[processJsonData] Full error:', err);
+    showMessage(`Error: ${errMsg}`, 'error');
   }
 }
 
 init();
 
 // Listen for custom loadExample event from example buttons
+console.log('[main.ts] Setting up loadExample event listener');
 document.addEventListener('loadExample', (event: Event) => {
+  console.log('[main.ts] loadExample event received:', event);
   const customEvent = event as CustomEvent;
+  console.log('[main.ts] Custom event detail type:', typeof customEvent.detail);
+  console.log('[main.ts] Custom event detail length:', customEvent.detail?.length);
+  console.log('[main.ts] Custom event detail (first 100 chars):', customEvent.detail?.substring(0, 100));
   processJsonData(customEvent.detail);
 });

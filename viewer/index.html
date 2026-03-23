@@ -603,19 +603,26 @@
       // Make loadExample accessible to HTML onclick handlers by assigning to window
       // BEFORE the module scope ends
       window.loadExample = function(exampleName) {
+        console.log('[loadExample] Called with:', exampleName);
         const data = examples[exampleName];
         if (!data) {
-          console.error('Example not found:', exampleName);
+          console.error('[loadExample] Example not found:', exampleName);
+          console.log('[loadExample] Available examples:', Object.keys(examples));
           return;
         }
+        console.log('[loadExample] Found example data:', data);
         // Dispatch a custom event with the example data
         // The main.ts module will listen for this
+        const jsonStr = JSON.stringify(data);
+        console.log('[loadExample] JSON string length:', jsonStr.length);
         const event = new CustomEvent('loadExample', { 
-          detail: JSON.stringify(data)
+          detail: jsonStr
         });
+        console.log('[loadExample] Dispatching CustomEvent');
         document.dispatchEvent(event);
         
         // Hide landing, show app
+        console.log('[loadExample] Hiding landing section, showing app section');
         document.getElementById('landingSection').style.display = 'none';
         document.getElementById('appSection').style.display = 'block';
       };
@@ -623,7 +630,9 @@
       // Auto-show app section when file is loaded
       const originalOnLoad = () => {
         const fileInput = document.getElementById('fileInput');
+        console.log('[HTML] Setting up file input listener');
         fileInput.addEventListener('change', () => {
+          console.log('[HTML] File input changed');
           document.getElementById('landingSection').style.display = 'none';
           document.getElementById('appSection').style.display = 'block';
         });
