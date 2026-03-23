@@ -560,7 +560,7 @@
       </div>
     </div>
 
-    <script type="module">
+    <script>
       // Example data
       const examples = {
         users: {
@@ -600,8 +600,14 @@
         }
       };
 
+      // Make loadExample accessible to HTML onclick handlers by assigning to window
+      // BEFORE the module scope ends
       window.loadExample = function(exampleName) {
         const data = examples[exampleName];
+        if (!data) {
+          console.error('Example not found:', exampleName);
+          return;
+        }
         // Dispatch a custom event with the example data
         // The main.ts module will listen for this
         const event = new CustomEvent('loadExample', { 

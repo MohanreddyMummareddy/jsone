@@ -2,7 +2,7 @@
  * Main entry point for jsone viewer
  */
 
-import { parseJsone, tableFromJsone, findAllTableSources, type TableSource } from '@jsone/core';
+import { parseJsone, tableFromJsone, findAllTableSources, type TableSource } from '@mummareddy_mohanreddy/jsone-core';
 import {
   $,
   on,
