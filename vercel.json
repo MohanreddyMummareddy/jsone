@@ -1,10 +1,10 @@
 {
-  "buildCommand": "npm run build -w viewer",
+  "buildCommand": "npm --prefix ./viewer run build",
   "outputDirectory": "viewer/dist",
   "env": {
     "NODE_ENV": "production"
   },
   "cleanUrls": true,
   "trailingSlash": false,
-  "installCommand": "npm install"
+  "installCommand": "npm install && npm --prefix ./viewer install"
 }
