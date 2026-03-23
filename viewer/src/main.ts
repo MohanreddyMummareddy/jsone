@@ -2,7 +2,7 @@
  * Main entry point for jsone viewer
  */
 
-import { parseJsone, tableFromJsone } from '@jsone/core';
+import { parseJsone, tableFromJsone, findAllTableSources, type TableSource } from '@jsone/core';
 import {
   $,
   on,
@@ -14,6 +14,7 @@ import {
   removeClass,
   hasClass,
   copyToClipboard,
+  el,
 } from './dom';
 import {
   createTableState,
@@ -26,6 +27,9 @@ import {
 } from './table';
 
 let currentState: any = null;
+let currentJsone: any = null;
+let availableTables: TableSource[] = [];
+let selectedTableIndex = 0;
 
 function init(): void {
   const fileInput = $('#fileInput') as HTMLInputElement;
@@ -35,6 +39,8 @@ function init(): void {
   const copyCSVBtn = $('#copyCSVBtn') as HTMLButtonElement;
   const tableContainer = $('#tableContainer');
   const treeContainer = $('#treeContainer');
+  const tableSelector = $('#tableSelector');
+  const downloadJsoneBtn = $('#downloadJsoneBtn');
 
   if (!fileInput) return;
 
@@ -47,23 +53,38 @@ function init(): void {
     try {
       const text = await file.text();
       const parsed = parseJsone(text);
-      const table = tableFromJsone(parsed.data);
+      currentJsone = parsed;
 
+      // Find all tabular representations
+      availableTables = findAllTableSources(parsed.data);
+
+      // Always get a table (coerced if needed)
+      const table = tableFromJsone(parsed.data);
       currentState = createTableState(table);
 
+      // Show table information
+      if (availableTables.length > 1) {
+        showMessage(`Found ${availableTables.length} tables in this JSON! Use dropdown to switch.`, 'success');
+        if (tableSelector) {
+          renderTableSelector(tableSelector);
+        }
+      }
+
+      // Render the table
       if (tableContainer) {
         renderTable(tableContainer, currentState, (key, value) => {
           showCellModal(key, value);
         });
       }
 
+      // Setup search
       if (searchInput) {
         searchInput.value = '';
         on(searchInput, 'input', (se) => {
           const query = (se.target as HTMLInputElement).value;
           if (currentState) {
             updateSearch(currentState, query);
-            if (tableContainer && !hasClass(treeContainer || { classList: { contains: () => false } }, 'hidden')) {
+            if (tableContainer && !hasClass($('#treeContainer') || { classList: { contains: () => false } }, 'hidden')) {
               renderTable(tableContainer, currentState, (key, value) => {
                 showCellModal(key, value);
               });
@@ -72,6 +93,7 @@ function init(): void {
         });
       }
 
+      // Setup CSV export
       if (copyCSVBtn) {
         copyCSVBtn.disabled = false;
         on(copyCSVBtn, 'click', () => {
@@ -88,6 +110,18 @@ function init(): void {
       if (tableContainer && treeContainer) {
         show(tableContainer);
         hide(treeContainer);
+        if (tableViewBtn && treeViewBtn) {
+          addClass(tableViewBtn, 'active');
+          removeClass(treeViewBtn, 'active');
+        }
+      }
+
+      // Enable download button
+      if (downloadJsoneBtn) {
+        downloadJsoneBtn.disabled = false;
+        on(downloadJsoneBtn, 'click', () => {
+          downloadAsJsone();
+        });
       }
 
       showMessage('File loaded successfully!', 'success');
@@ -113,7 +147,7 @@ function init(): void {
 
       // Render tree view when shown
       if (currentState) {
-        renderTreeView(treeContainer, currentState.data.rows);
+        renderTreeView(treeContainer, currentJsone.data);
       }
     });
   }
@@ -127,6 +161,112 @@ function init(): void {
       }
     });
   }
+}
+
+function renderTableSelector(container: HTMLElement): void {
+  clear(container);
+  const label = el('label', {}, ['Choose table:']);
+  const select = document.createElement('select') as HTMLSelectElement;
+
+  availableTables.forEach((table, index) => {
+    const option = document.createElement('option') as HTMLOptionElement;
+    option.value = String(index);
+    option.textContent = `${table.path} (${table.rowCount} rows, ${table.columnCount} cols)`;
+    if (index === 0) option.selected = true;
+    select.appendChild(option);
+  });
+
+  on(select, 'change', (e) => {
+    const index = parseInt((e.target as HTMLSelectElement).value);
+    selectedTableIndex = index;
+    const tableContainer = $('#tableContainer');
+    const searchInput = $('#searchInput') as HTMLInputElement;
+    const copyCSVBtn = $('#copyCSVBtn') as HTMLButtonElement;
+    loadTableByIndex(index, tableContainer, searchInput, copyCSVBtn);
+  });
+
+  container.appendChild(label);
+  container.appendChild(select);
+}
+
+function loadTableByIndex(
+  index: number,
+  tableContainer: HTMLElement | null,
+  searchInput: HTMLInputElement | null,
+  copyCSVBtn: HTMLButtonElement | null
+): void {
+  if (index >= availableTables.length) return;
+
+  const table = availableTables[index];
+  const tableData = tableFromJsone(table.array);
+  currentState = createTableState(tableData);
+
+  if (tableContainer) {
+    renderTable(tableContainer, currentState, (key, value) => {
+      showCellModal(key, value);
+    });
+  }
+
+  if (searchInput) {
+    searchInput.value = '';
+    on(searchInput, 'input', (se) => {
+      const query = (se.target as HTMLInputElement).value;
+      if (currentState) {
+        updateSearch(currentState, query);
+        if (tableContainer && !hasClass($('#treeContainer') || { classList: { contains: () => false } }, 'hidden')) {
+          renderTable(tableContainer, currentState, (key, value) => {
+            showCellModal(key, value);
+          });
+        }
+      }
+    });
+  }
+
+  if (copyCSVBtn) {
+    copyCSVBtn.disabled = false;
+    on(copyCSVBtn, 'click', () => {
+      if (currentState) {
+        const csv = exportTableToCSV(currentState);
+        copyToClipboard(csv).then(() => {
+          showMessage('CSV copied to clipboard!', 'success');
+        });
+      }
+    });
+  }
+}
+
+function downloadAsJsone(): void {
+  if (!currentJsone || !currentState) return;
+
+  // Build the jsone file with metadata
+  const jsoneContent = {
+    $meta: {
+      title: prompt('Enter title for this table:', 'My Data') || 'My Data',
+      views: [
+        {
+          id: 'primary',
+          source: availableTables[selectedTableIndex].path === '[root]' ? undefined : availableTables[selectedTableIndex].path,
+          columns: currentState.data.columns.map((col: any) => ({
+            key: col.key,
+            label: col.label,
+            type: col.type,
+          })),
+        },
+      ],
+    },
+    ...currentJsone.data,
+  };
+
+  const jsoneString = JSON.stringify(jsoneContent, null, 2);
+  const blob = new Blob([jsoneString], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'data.jsone';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  showMessage('Downloaded as .jsone file!', 'success');
 }
 
 init();

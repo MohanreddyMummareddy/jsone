@@ -3,80 +3,82 @@
 
 **JSON files that automatically render as tables.**
 
-`jsone` is a backward‑compatible extension of JSON designed to make structured data easy for humans to read and understand — without writing code, running servers, or building dashboards.
+`jsone` is a backward-compatible extension of JSON designed to make structured data easy for humans to read and understand — without writing code, running servers, or building dashboards.
 
 Think of jsone as **the Markdown of structured data**.
 
 ---
 
-## Table of Contents
+## Quick Links
 
-- # problem
-- # solution
-- # key-features
-- # design-principles
-- # how-it-works
-- # optional-metadata
-- # file-format-overview
-- # use-cases
-- # compatibility
-- # project-status
-- # roadmap
-- # repository-structure
-- # specification
-- # versioning
-- # contributing
-- # security-considerations
-- # faq
-- # license
+- 🚀 **[Quick Start](./QUICKSTART.md)** — Get started in 5 minutes
+- 📖 **[Full Specification](./SPEC.md)** — Format details and examples
+- 🤝 **[Contributing Guide](./CONTRIBUTING.md)** — Help improve jsone
+- ⚖️ **[MIT License](./LICENSE)** — Free to use and modify
 
 ---
 
-## Problem
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Design Principles](#design-principles)
+4. [How It Works](#how-it-works)
+5. [Installation](#installation)
+6. [Usage](#usage)
+7. [Examples](#examples)
+8. [File Format](#file-format)
+9. [Project Status](#project-status)
+10. [License](#license)
+
+---
+
+## Overview
+
+### The Problem
 
 JSON is the most widely used data interchange format, but it is difficult for humans to inspect and understand at scale.
 
 Today, working with JSON usually involves:
 - Expanding and collapsing deeply nested trees
 - Searching keys and values using `Ctrl + F`
-- Writing ad‑hoc scripts to flatten data
-- Copy‑pasting data into spreadsheets or BI tools
+- Writing ad-hoc scripts to flatten data
+- Copy-pasting data into spreadsheets or BI tools
 
 Arrays of objects — which naturally represent tabular data — are still displayed as hierarchical trees in most editors and viewers.
 
 JSON is optimized for machines, not for human readability.
 
----
-
-## Solution
+### The Solution
 
 **jsone (JSON Enhanced)** improves JSON readability by rendering structured data as tables by default.
 
-- Arrays of objects automatically appear as tables
+- **Any JSON structure becomes a table** — arrays, objects, primitives all work
 - No runtime, backend, or framework required
 - Works as a static file across editors, CLIs, and browsers
-- Optional metadata allows explicit control when needed
-
-jsone preserves pure JSON data while allowing the data itself to describe how it should be viewed.
+- Optional metadata (`$meta`) allows explicit control when needed
+- Preserves pure JSON data — no modifications to source
 
 ---
 
-## Key Features
+## Features
 
-- ✅ Automatic table rendering
-- ✅ Zero configuration for common cases
-- ✅ Optional metadata for advanced control
-- ✅ Backward compatible with JSON
-- ✅ Language and framework agnostic
-- ✅ Static, execution‑free design
-- ✅ Designed for editors, CLIs, and documentation
+✅ **Automatic Table Rendering** — Arrays of objects appear as tables instantly  
+✅ **Universal JSON Support** — Any JSON structure works (objects, primitives, arrays)  
+✅ **Zero Configuration** — Works out of the box for common cases  
+✅ **Smart Type Detection** — Automatic detection of dates, numbers, booleans  
+✅ **Nested Object Flattening** — Dot-notation columns for hierarchical data  
+✅ **Optional Metadata** — `$meta` for explicit control and refinement  
+✅ **Backward Compatible** — Valid JSON in, valid JSON out  
+✅ **Language Agnostic** — Works across ecosystems  
+✅ **Static by Default** — No execution, no servers, no runtime required  
 
 ---
 
 ## Design Principles
 
 1. **Inference First**  
-   Tables render automatically without configuration.
+   Tables render automatically without any configuration.
 
 2. **Explicit Overrides Are Optional**  
    Metadata refines rendering but is never mandatory.
@@ -85,18 +87,39 @@ jsone preserves pure JSON data while allowing the data itself to describe how it
    Removing `$meta` results in valid JSON.
 
 4. **Static by Default**  
-   No execution, no servers, no scripts.
+   No execution, no servers, no scripts required.
 
-5. **Tool Agnostic**  
-   Works across ecosystems, not tied to a framework.
+5. **Universal Support**  
+   Works across all ecosystems and platforms.
+
+6. **Smart Defaults**  
+   Type detection and formatting work intelligently for common cases.
 
 ---
 
 ## How It Works
 
+### Basic Flow
+
+```
+Input JSON
+    ↓
+Parse & extract $meta (if present)
+    ↓
+Find ALL tabular representations
+    ↓
+Rank by quality & let user select
+    ↓
+Flatten nested objects (dot-notation)
+    ↓
+Detect column types (number, date, boolean, auto)
+    ↓
+Display as interactive table
+```
+
 ### Automatic Table Inference
 
-Any array of objects is rendered as a table by default.
+**Arrays of objects** are rendered as tables automatically:
 
 ```json
 [
@@ -105,13 +128,16 @@ Any array of objects is rendered as a table by default.
 ]
 ```
 
-➡ Automatically displayed as a table.
+➡ Displays as table:
 
----
+| id | name | city |
+|----|------|------|
+| 1 | Alice | Chennai |
+| 2 | Bob | Bangalore |
 
 ### Nested Objects
 
-Nested objects are flattened using dot notation so that deeply structured data remains readable in a tabular format.
+Nested objects are flattened using dot notation for tabular display:
 
 ```json
 {
@@ -123,30 +149,244 @@ Nested objects are flattened using dot notation so that deeply structured data r
 }
 ```
 
-➡ Columns become:
-- `id`
-- `profile.role`
-- `profile.city`
+➡ Columns: `id`, `profile.role`, `profile.city`
 
-Flattening is applied only for presentation. The underlying data remains unchanged.
+### Universal Support
 
----
+ANY JSON structure works:
 
-### Arrays Inside Rows
-
-When arrays appear inside objects:
-
-- Arrays of primitive values are displayed inline (comma‑separated)
-- Arrays of objects are shown as truncated JSON
-- Full values are expandable on demand
-
-Default array handling can be refined using metadata.
+| Input | Output |
+|-------|--------|
+| `{"key": "value"}` | 1-row table |
+| `["a", "b", "c"]` | 3-row table with "value" column |
+| `{ "nested": { "data": [...] } }` | Auto-discovers nested arrays |
+| `42` | 1-row table |
 
 ---
 
-## Optional Metadata
+## Installation
 
-When automatic inference is insufficient, an optional `$meta` block can be provided to refine rendering behavior.
+### NPM Package
+
+```bash
+npm install @jsone/core
+```
+
+### From Source
+
+```bash
+# Clone repository
+git clone https://github.com/mummareddy/jsone.git
+cd jsone
+
+# Install dependencies
+npm install
+
+# Build all packages
+npm run build
+
+# Run tests
+npm test
+```
+
+---
+
+## Usage
+
+### 1. Web Viewer
+
+Upload any `.json` or `.jsone` file to view as interactive table:
+
+```bash
+# Run development server
+npm run dev:viewer
+
+# Or open built version directly
+open viewer/dist/index.html
+```
+
+**Features:**
+- 🔍 Search and filter rows
+- ↕️ Sort by column
+- 📋 Copy as CSV
+- 💾 Download as `.jsone` file
+- 📊 Switch between multiple tables
+- 🌳 Tree view for detailed inspection
+
+### 2. CLI
+
+```bash
+# View as table
+jsone table data.jsone
+
+# Export to CSV
+jsone csv data.jsone -o output.csv
+
+# Validate structure
+jsone validate data.jsone
+```
+
+### 3. Node.js Library
+
+```javascript
+import { parseJsone, tableFromJsone } from '@jsone/core';
+
+const json = { users: [
+  { id: 1, name: "Alice" },
+  { id: 2, name: "Bob" }
+]};
+
+const parsed = parseJsone(json);
+const table = tableFromJsone(parsed.data);
+
+console.log(table.rows);    // [{ id: 1, name: "Alice" }, ...]
+console.log(table.columns); // [{ key: "id", label: "id", type: "number" }, ...]
+```
+
+---
+
+## Examples
+
+### Simple Array
+
+**Input:** `users.jsone`
+```json
+[
+  { "id": 1, "name": "Ravi", "email": "ravi@example.com" },
+  { "id": 2, "name": "Anita", "email": "anita@example.com" }
+]
+```
+
+**Display:** Interactive table with search, sort, export
+
+### With Metadata
+
+**Input:** `orders.jsone`
+```json
+{
+  "$meta": {
+    "title": "Orders",
+    "views": [
+      {
+        "id": "all",
+        "source": "orders",
+        "columns": [
+          { "key": "orderId", "label": "Order ID" },
+          { "key": "total.amount", "label": "Total", "type": "number" }
+        ]
+      }
+    ]
+  },
+  "orders": [
+    {
+      "orderId": "ORD-001",
+      "customer": { "name": "Alice" },
+      "total": { "amount": 150.50 },
+      "items": [{ "sku": "X", "qty": 2 }]
+    }
+  ]
+}
+```
+
+**Display:** Table with custom title, formatted columns, optional views
+
+### Primitive Values
+
+**Input:** `config.jsone`
+```json
+{
+  "api_key": "secret123",
+  "timeout": 5000,
+  "debug": true
+}
+```
+
+**Display:** 1-row table showing all config values
+
+---
+
+## File Format
+
+### Core Structure
+
+Every `.jsone` file is valid JSON with optional `$meta` block:
+
+```json
+{
+  "$meta": {
+    "title": "Display Title",
+    "views": [...]
+  },
+  "your": "data"
+}
+```
+
+### Metadata (`$meta`)
+
+| Field | Type | Required | Purpose |
+|-------|------|----------|---------|
+| `title` | string | No | Display name for the table |
+| `views` | array | No | Multiple view configurations |
+| `description` | string | No | Document description |
+| Custom | any | No | Extend with application-specific data |
+
+### View Definition
+
+Use to explicitly configure table display:
+
+```json
+{
+  "$meta": {
+    "views": [
+      {
+        "id": "view-id",
+        "source": "path/to/data",
+        "columns": [
+          { "key": "field", "label": "Display", "type": "number" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Project Status
+
+**Version:** 0.4.0  
+**Status:** Stable & Production Ready  
+**Browsers:** Chrome, Firefox, Safari, Edge (all modern versions)  
+**Node.js:** 18.0.0+  
+**Package Managers:** npm 8+
+
+### Roadmap
+
+- ✅ Core inference engine
+- ✅ Web viewer (with search, sort, export)
+- ✅ Universal JSON support
+- ✅ Smart type detection
+- 🔄 VS Code extension
+- 🔄 Advanced filtering
+- 🔄 Custom rendering hooks
+- 🔄 Schema validation
+
+---
+
+## License
+
+MIT License © 2026 MUMMAREDDY MOHAN REDDY
+
+Free to use, modify, and distribute. See [LICENSE](./LICENSE) for details.
+
+---
+
+## Support & Contributing
+
+- 📖 **Documentation:** [Specification](./SPEC.md) | [Quick Start](./QUICKSTART.md)
+- 🐛 **Issues:** [GitHub Issues](https://github.com/mummareddy/jsone/issues)
+- 🤝 **Contributing:** [See CONTRIBUTING.md](./CONTRIBUTING.md)
+- 💬 **Discussions:** [GitHub Discussions](https://github.com/mummareddy/jsone/discussions)
 
 ```json
 {

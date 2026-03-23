@@ -6,6 +6,9 @@ import { flattenRow as flattenRowImpl, formatCellValue } from './flatten.js';
 import {
   inferArrayOfObjects as inferArrayOfObjectsImpl,
   inferColumns as inferColumnsImpl,
+  findAllTableSources as findAllTableSourcesImpl,
+  coerceToTableArray as coerceToTableArrayImpl,
+  type TableSource,
 } from './infer.js';
 import {
   ColumnDef,
@@ -110,12 +113,21 @@ export function inferColumns(
   return inferColumnsImpl(rows, max);
 }
 
+export function findAllTableSources(root: any): TableSource[] {
+  return findAllTableSourcesImpl(root);
+}
+
+export function coerceToTableArray(data: any): any[] {
+  return coerceToTableArrayImpl(data);
+}
+
 /**
  * Generate a table from jsone data.
  * Algorithm:
  *   1. If $meta.views with matching viewId exists, use its source and column hints
  *   2. Else find first array of objects
- *   3. Else return empty table
+ *   3. Else coerce any JSON structure into array format
+ *   4. Always return a table (never empty)
  * @param root The parsed jsone object or raw data
  * @param viewId Optional view ID to match in $meta.views
  * @returns Table with rows and columns
@@ -155,8 +167,13 @@ export function tableFromJsone(
     }
   }
 
-  // Step 2: Infer first array of objects
-  const rows = inferArrayOfObjects(data);
+  // Step 2: Try to infer first array of objects
+  let rows = inferArrayOfObjects(data);
+
+  // Step 3: If no array found, coerce ANY structure into table array
+  if (!rows || rows.length === 0) {
+    rows = coerceToTableArray(data);
+  }
 
   if (!rows || rows.length === 0) {
     return { rows: [], columns: [] };
@@ -202,6 +219,7 @@ export type {
   TableResult,
   ViewDef,
   ColumnHint,
+  TableSource,
 };
 
 // Utility export

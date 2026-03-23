@@ -6,6 +6,54 @@ import { ColumnDef, ColumnType } from './types.js';
 import { isPlainObject } from './index.js';
 
 /**
+ * Result of finding arrays of objects
+ */
+export interface TableSource {
+  path: string; // Path to the array (e.g., "data.users", "items")
+  array: any[]; // The array itself
+  rowCount: number;
+  columnCount: number;
+  quality: number; // Score for ranking (0-100)
+}
+
+/**
+ * Convert ANY JSON structure into an array of objects for table display
+ * Handles: arrays, objects, primitives, arrays of primitives
+ */
+export function coerceToTableArray(data: any): any[] {
+  // Already an array of objects
+  if (Array.isArray(data)) {
+    if (data.length === 0) return [];
+    
+    if (data.every((el) => isPlainObject(el))) {
+      return data; // Array of objects - use as-is
+    }
+    
+    // Array of primitives - convert each to object
+    if (data.every((el) => typeof el !== 'object' || el === null)) {
+      return data.map((val, idx) => ({ 
+        '#index': idx, 
+        'value': val 
+      }));
+    }
+
+    // Mixed array - convert each to object
+    return data.map((val, idx) => {
+      if (isPlainObject(val)) return val;
+      return { '#index': idx, 'value': val };
+    });
+  }
+
+  // Single object - wrap in array
+  if (isPlainObject(data)) {
+    return [data];
+  }
+
+  // Primitive value - wrap in object
+  return [{ 'value': data }];
+}
+
+/**
  * Find the first array where every element is a plain object.
  * Searches recursively through the data structure.
  * @param root The root object/array to search
@@ -30,6 +78,55 @@ export function inferArrayOfObjects(root: any): any[] | null {
   }
 
   return null;
+}
+
+/**
+ * Find ALL arrays of objects in the data structure.
+ * Returns them sorted by quality (best candidates first).
+ * @param root The root object/array to search
+ * @param path Current path (used internally for recursion)
+ * @returns Array of table sources sorted by quality score
+ */
+export function findAllTableSources(
+  root: any,
+  path = ''
+): TableSource[] {
+  const tables: TableSource[] = [];
+
+  function traverse(obj: any, currentPath: string): void {
+    if (Array.isArray(obj)) {
+      // Check if array of objects
+      if (
+        obj.length > 0 &&
+        obj.every((el) => isPlainObject(el))
+      ) {
+        // Calculate quality score
+        const columnCount = new Set(
+          obj.flatMap((row) => Object.keys(row))
+        ).size;
+        const quality = Math.min(100, obj.length * 2 + columnCount * 5);
+
+        tables.push({
+          path: currentPath || '[root]',
+          array: obj,
+          rowCount: obj.length,
+          columnCount,
+          quality,
+        });
+      }
+    } else if (isPlainObject(obj)) {
+      // Recurse into object properties
+      for (const [key, value] of Object.entries(obj)) {
+        const newPath = currentPath ? `${currentPath}.${key}` : key;
+        traverse(value, newPath);
+      }
+    }
+  }
+
+  traverse(root, path);
+
+  // Sort by quality descending
+  return tables.sort((a, b) => b.quality - a.quality);
 }
 
 /**

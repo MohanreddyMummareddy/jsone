@@ -304,6 +304,27 @@
         margin-bottom: 12px;
         border: 1px solid #c3e6cb;
       }
+
+      #tableSelector {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      #tableSelector label {
+        white-space: nowrap;
+        font-weight: 500;
+      }
+
+      #tableSelector select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        min-width: 200px;
+        background: white;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -317,11 +338,13 @@
           <div class="search-box">
             <input type="text" id="searchInput" placeholder="Search rows..." />
           </div>
+          <div id="tableSelector"></div>
           <div class="view-toggle">
             <button id="tableViewBtn" class="active">Table</button>
             <button id="treeViewBtn">Tree</button>
           </div>
           <button id="copyCSVBtn" disabled>Copy CSV</button>
+          <button id="downloadJsoneBtn" disabled>Download .jsone</button>
         </div>
       </div>
 
