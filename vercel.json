@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd viewer && npm install && npm run build",
+  "buildCommand": "npm run build -w viewer",
   "outputDirectory": "viewer/dist",
   "env": {
     "NODE_ENV": "production"
