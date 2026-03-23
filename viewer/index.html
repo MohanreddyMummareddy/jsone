@@ -602,19 +602,16 @@
 
       window.loadExample = function(exampleName) {
         const data = examples[exampleName];
-        const jsonStr = JSON.stringify(data);
-        // Create a Blob and File object to simulate file upload
-        const blob = new Blob([jsonStr], { type: 'application/json' });
-        const file = new File([blob], `${exampleName}.json`, { type: 'application/json' });
+        // Dispatch a custom event with the example data
+        // The main.ts module will listen for this
+        const event = new CustomEvent('loadExample', { 
+          detail: JSON.stringify(data)
+        });
+        document.dispatchEvent(event);
         
-        // Trigger file input handler
-        const fileInput = document.getElementById('fileInput');
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        fileInput.files = dataTransfer.files;
-        
-        // Trigger change event
-        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        // Hide landing, show app
+        document.getElementById('landingSection').style.display = 'none';
+        document.getElementById('appSection').style.display = 'block';
       };
 
       // Auto-show app section when file is loaded

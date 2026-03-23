@@ -52,81 +52,10 @@ function init(): void {
 
     try {
       const text = await file.text();
-      const parsed = parseJsone(text);
-      currentJsone = parsed;
-
-      // Find all tabular representations
-      availableTables = findAllTableSources(parsed.data);
-
-      // Always get a table (coerced if needed)
-      const table = tableFromJsone(parsed.data);
-      currentState = createTableState(table);
-
-      // Show table information
-      if (availableTables.length > 1) {
-        showMessage(`Found ${availableTables.length} tables in this JSON! Use dropdown to switch.`, 'success');
-        if (tableSelector) {
-          renderTableSelector(tableSelector);
-        }
-      }
-
-      // Render the table
-      if (tableContainer) {
-        renderTable(tableContainer, currentState, (key, value) => {
-          showCellModal(key, value);
-        });
-      }
-
-      // Setup search
-      if (searchInput) {
-        searchInput.value = '';
-        on(searchInput, 'input', (se) => {
-          const query = (se.target as HTMLInputElement).value;
-          if (currentState) {
-            updateSearch(currentState, query);
-            if (tableContainer && !hasClass($('#treeContainer') || { classList: { contains: () => false } }, 'hidden')) {
-              renderTable(tableContainer, currentState, (key, value) => {
-                showCellModal(key, value);
-              });
-            }
-          }
-        });
-      }
-
-      // Setup CSV export
-      if (copyCSVBtn) {
-        copyCSVBtn.disabled = false;
-        on(copyCSVBtn, 'click', () => {
-          if (currentState) {
-            const csv = exportTableToCSV(currentState);
-            copyToClipboard(csv).then(() => {
-              showMessage('CSV copied to clipboard!', 'success');
-            });
-          }
-        });
-      }
-
-      // Show table by default
-      if (tableContainer && treeContainer) {
-        show(tableContainer);
-        hide(treeContainer);
-        if (tableViewBtn && treeViewBtn) {
-          addClass(tableViewBtn, 'active');
-          removeClass(treeViewBtn, 'active');
-        }
-      }
-
-      // Enable download button
-      if (downloadJsoneBtn) {
-        downloadJsoneBtn.disabled = false;
-        on(downloadJsoneBtn, 'click', () => {
-          downloadAsJsone();
-        });
-      }
-
+      processJsonData(text);
       showMessage('File loaded successfully!', 'success');
     } catch (err) {
-      showMessage(`Error: ${err instanceof Error ? err.message : String(err)}`, 'error');
+      showMessage(`Error reading file: ${err instanceof Error ? err.message : String(err)}`, 'error');
     }
   });
 
@@ -269,4 +198,60 @@ function downloadAsJsone(): void {
   showMessage('Downloaded as .jsone file!', 'success');
 }
 
+function processJsonData(jsonStr: string): void {
+  try {
+    const parsed = parseJsone(jsonStr);
+    currentJsone = parsed;
+    const tableContainer = $('#tableContainer');
+    const tableViewBtn = $('#tableViewBtn');
+    const treeViewBtn = $('#treeViewBtn');
+    const downloadJsoneBtn = $('#downloadJsoneBtn') as HTMLButtonElement;
+
+    // Find all tabular representations
+    availableTables = findAllTableSources(parsed.data);
+
+    // Always get a table (coerced if needed)
+    const table = tableFromJsone(parsed.data);
+    currentState = createTableState(table);
+
+    // Show table information if multiple tables found
+    if (availableTables.length > 1) {
+      showMessage(`Found ${availableTables.length} tables in this JSON! Use dropdown to switch.`, 'success');
+    }
+
+    // Render the table
+    if (tableContainer) {
+      renderTable(tableContainer, currentState, (key, value) => {
+        showCellModal(key, value);
+      });
+    }
+
+    // Show table by default
+    if (tableContainer) {
+      const treeContainer = $('#treeContainer');
+      if (treeContainer) {
+        show(tableContainer);
+        hide(treeContainer);
+        if (tableViewBtn && treeViewBtn) {
+          addClass(tableViewBtn, 'active');
+          removeClass(treeViewBtn, 'active');
+        }
+      }
+    }
+
+    // Enable download button
+    if (downloadJsoneBtn) {
+      downloadJsoneBtn.disabled = false;
+    }
+  } catch (err) {
+    showMessage(`Error: ${err instanceof Error ? err.message : String(err)}`, 'error');
+  }
+}
+
 init();
+
+// Listen for custom loadExample event from example buttons
+document.addEventListener('loadExample', (event: Event) => {
+  const customEvent = event as CustomEvent;
+  processJsonData(customEvent.detail);
+});
