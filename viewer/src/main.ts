@@ -311,13 +311,37 @@ function processJsonData(jsonStr: string): void {
 
 init();
 
-// Listen for custom loadExample event from example buttons
-console.log('[main.ts] Setting up loadExample event listener');
+console.log('[main.ts] Setting up loadExample event handling');
+
+// Create handler function that will be called either by event listener or directly
+const handleLoadExample = (jsonStr: string) => {
+  console.log('[main.ts] handleLoadExample called with jsonStr length:', jsonStr.length);
+  processJsonData(jsonStr);
+};
+
+// Expose handler globally so inline script can call it directly if needed
+(window as any).__handleLoadExample = handleLoadExample;
+console.log('[main.ts] Exposed __handleLoadExample globally');
+
+// Set up event listener
 document.addEventListener('loadExample', (event: Event) => {
   console.log('[main.ts] loadExample event received:', event);
   const customEvent = event as CustomEvent;
   console.log('[main.ts] Custom event detail type:', typeof customEvent.detail);
   console.log('[main.ts] Custom event detail length:', customEvent.detail?.length);
   console.log('[main.ts] Custom event detail (first 100 chars):', customEvent.detail?.substring(0, 100));
-  processJsonData(customEvent.detail);
+  handleLoadExample(customEvent.detail);
 });
+console.log('[main.ts] Event listener registered');
+
+// Process any queued events that were buffered before this listener was ready
+console.log('[main.ts] Checking for queued events...');
+const queue = (window as any).__loadExampleQueue || [];
+console.log('[main.ts] Queue length:', queue.length);
+while (queue.length > 0) {
+  const event = queue.shift();
+  console.log('[main.ts] Processing queued event:', event);
+  const customEvent = event as CustomEvent;
+  handleLoadExample(customEvent.detail);
+}
+console.log('[main.ts] All queued events processed');
