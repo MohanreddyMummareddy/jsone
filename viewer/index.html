@@ -325,11 +325,197 @@
         background: white;
         cursor: pointer;
       }
+
+      .landing {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        margin-bottom: 32px;
+      }
+
+      .landing.hidden {
+        display: none;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 48px 32px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      }
+
+      .hero h1 {
+        font-size: 48px;
+        margin-bottom: 16px;
+        font-weight: 700;
+      }
+
+      .hero p {
+        font-size: 20px;
+        margin-bottom: 12px;
+        opacity: 0.95;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .tagline {
+        font-size: 16px;
+        opacity: 0.85;
+        margin-bottom: 32px;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .cta-primary {
+        background: white;
+        color: #667eea;
+        padding: 12px 32px;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .cta-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #667eea;
+      }
+
+      .feature-card h3 {
+        font-size: 18px;
+        margin-bottom: 12px;
+        color: #667eea;
+      }
+
+      .feature-card p {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.6;
+      }
+
+      .feature-emoji {
+        font-size: 32px;
+        margin-bottom: 8px;
+      }
+
+      .examples {
+        background: white;
+        padding: 32px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .examples h3 {
+        font-size: 20px;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      .example-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+      }
+
+      .example-btn {
+        background: #f8f9fa;
+        border: 2px solid #dee2e6;
+        padding: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .example-btn:hover {
+        background: #667eea;
+        border-color: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
+
+      .app-section.hidden {
+        display: none;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="header">
+      <!-- Landing Page -->
+      <div class="landing" id="landingSection">
+        <div class="hero">
+          <h1>jsone</h1>
+          <p>Convert any JSON structure into interactive tables instantly</p>
+          <p class="tagline">🚀 No installation. No configuration. Just drop and view.</p>
+          <div class="cta-buttons">
+            <button class="cta-primary" onclick="document.getElementById('fileInput').click()">Upload JSON</button>
+          </div>
+        </div>
+
+        <div class="features">
+          <div class="feature-card">
+            <div class="feature-emoji">🎯</div>
+            <h3>Universal JSON</h3>
+            <p>Works with objects, arrays, primitives—any JSON structure becomes a beautiful table</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-emoji">⚡</div>
+            <h3>Zero Dependencies</h3>
+            <p>Lightweight and fast. Runs entirely in your browser—no server required</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-emoji">🔍</div>
+            <h3>Smart Detection</h3>
+            <p>Automatically finds tables, detects data types, formats dates, sorts columns</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-emoji">💾</div>
+            <h3>Export & Share</h3>
+            <p>Download as CSV, JSON, or .jsone format. Share results with team members</p>
+          </div>
+        </div>
+
+        <div class="examples">
+          <h3>Try with Examples</h3>
+          <div class="example-grid">
+            <button class="example-btn" onclick="loadExample('users')">👥 Users</button>
+            <button class="example-btn" onclick="loadExample('orders')">📦 Orders</button>
+            <button class="example-btn" onclick="loadExample('products')">🛍️ Products</button>
+            <button class="example-btn" onclick="loadExample('nested')">🔗 Nested Data</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- App Section (Hidden initially) -->
+      <div class="app-section" id="appSection">
+        <div class="header">
         <h1>jsone Viewer</h1>
         <div class="controls">
           <div class="file-input-wrapper">
@@ -374,6 +560,74 @@
       </div>
     </div>
 
+    <script type="module">
+      // Example data
+      const examples = {
+        users: {
+          $meta: { title: "Sample Users" },
+          data: [
+            { id: 1, name: "Alice Johnson", email: "alice@example.com", role: "Admin", joined: "2024-01-15" },
+            { id: 2, name: "Bob Smith", email: "bob@example.com", role: "User", joined: "2024-02-20" },
+            { id: 3, name: "Carol Williams", email: "carol@example.com", role: "Editor", joined: "2024-03-10" },
+            { id: 4, name: "David Brown", email: "david@example.com", role: "User", joined: "2024-03-20" }
+          ]
+        },
+        orders: {
+          $meta: { title: "Sample Orders" },
+          data: [
+            { orderId: 1001, customer: "Alice", amount: 150.00, status: "Delivered", date: "2024-03-10" },
+            { orderId: 1002, customer: "Bob", amount: 89.99, status: "Shipped", date: "2024-03-15" },
+            { orderId: 1003, customer: "Carol", amount: 250.50, status: "Processing", date: "2024-03-20" },
+            { orderId: 1004, customer: "David", amount: 45.00, status: "Pending", date: "2024-03-22" }
+          ]
+        },
+        products: {
+          $meta: { title: "Sample Products" },
+          data: [
+            { id: 1, name: "Laptop", category: "Electronics", price: 999.99, stock: 15 },
+            { id: 2, name: "Monitor", category: "Electronics", price: 399.99, stock: 32 },
+            { id: 3, name: "Keyboard", category: "Accessories", price: 99.99, stock: 125 },
+            { id: 4, name: "Mouse", category: "Accessories", price: 49.99, stock: 200 }
+          ]
+        },
+        nested: {
+          $meta: { title: "Nested Data Example" },
+          users: [
+            { id: 1, name: "Alice", profile: { city: "New York", country: "USA", zip: "10001" } },
+            { id: 2, name: "Bob", profile: { city: "London", country: "UK", zip: "SW1A" } },
+            { id: 3, name: "Carol", profile: { city: "Toronto", country: "Canada", zip: "M5V" } }
+          ]
+        }
+      };
+
+      window.loadExample = function(exampleName) {
+        const data = examples[exampleName];
+        const jsonStr = JSON.stringify(data);
+        // Create a Blob and File object to simulate file upload
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const file = new File([blob], `${exampleName}.json`, { type: 'application/json' });
+        
+        // Trigger file input handler
+        const fileInput = document.getElementById('fileInput');
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        
+        // Trigger change event
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+
+      // Auto-show app section when file is loaded
+      const originalOnLoad = () => {
+        const fileInput = document.getElementById('fileInput');
+        fileInput.addEventListener('change', () => {
+          document.getElementById('landingSection').style.display = 'none';
+          document.getElementById('appSection').style.display = 'block';
+        });
+      };
+
+      originalOnLoad();
+    </script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
