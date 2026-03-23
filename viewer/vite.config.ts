@@ -1,6 +1,12 @@
 import { defineConfig } from 'vite';
+import path from 'path';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@mummareddy_mohanreddy/jsone-core': path.resolve(__dirname, '../packages/core/src/index.ts'),
+    },
+  },
   server: {
     port: 5173,
     open: true,
