@@ -2,6 +2,13 @@
   "name": "@jsone/viewer",
   "version": "0.4.0",
   "description": "jsone web viewer — static HTML viewer for jsone files",
+  "author": "Mohan Reddy Mummareddy",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MohanreddyMummareddy/jsone.git",
+    "directory": "viewer"
+  },
   "type": "module",
   "main": "./dist/main.js",
   "scripts": {

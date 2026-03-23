@@ -4,6 +4,10 @@
   "description": "JSON Enhanced — auto-render arrays of objects as tables",
   "private": true,
   "type": "module",
+  "author": "Mohan Reddy Mummareddy",
+  "license": "MIT",
+  "repository": "https://github.com/MohanreddyMummareddy/jsone",
+  "bugs": "https://github.com/MohanreddyMummareddy/jsone/issues",
   "workspaces": [
     "packages/core",
     "viewer",

@@ -2,6 +2,13 @@
   "name": "@jsone/cli",
   "version": "0.4.0",
   "description": "jsone CLI — command-line tool for viewing and converting jsone files",
+  "author": "Mohan Reddy Mummareddy",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MohanreddyMummareddy/jsone.git",
+    "directory": "cli"
+  },
   "type": "module",
   "bin": {
     "jsone": "./bin/jsone.mjs"

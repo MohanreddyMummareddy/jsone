@@ -2,6 +2,13 @@
   "name": "@jsone/core",
   "version": "0.4.0",
   "description": "jsone core library — JSON parsing, inference, and table generation",
+  "author": "Mohan Reddy Mummareddy",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MohanreddyMummareddy/jsone.git",
+    "directory": "packages/core"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
