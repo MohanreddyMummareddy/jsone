@@ -17,7 +17,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@jsone/core": "../packages/core"
+    "@mummareddy_mohanreddy/jsone-core": "^0.4.1"
   },
   "devDependencies": {
     "typescript": "^5.3.0",

@@ -1,9 +1,10 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "cd viewer && npm install && npm run build",
   "outputDirectory": "viewer/dist",
   "env": {
     "NODE_ENV": "production"
   },
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "installCommand": "npm install"
 }
