@@ -2,10 +2,27 @@
 
 Command-line tool to convert and analyze JSON/jsone files with interactive table formatting.
 
+**Status:** ✅ Published to npm  
+**Package:** `@mummareddy_mohanreddy/jsone-cli@0.4.3`  
+**npm Link:** https://www.npmjs.com/package/@mummareddy_mohanreddy/jsone-cli
+
 ## Installation
 
 ```bash
-npm install -g jsone-cli
+npm install -g @mummareddy_mohanreddy/jsone-cli
+```
+
+## Quick Start
+
+```bash
+# View JSON as ASCII table
+jsone convert data.json
+
+# Export to CSV
+jsone convert data.json --format csv --output table.csv
+
+# Show data statistics
+jsone analyze data.json
 ```
 
 ## Usage
@@ -33,7 +50,7 @@ jsone analyze data.json
 ## Commands
 
 - `convert <file>` - Convert JSON/jsone file to table format
-- `analyze <file>` - Show data statistics
+- `analyze <file>` - Show data statistics  
 - `help` - Display help message
 - `version` - Show version
 
@@ -47,7 +64,42 @@ jsone analyze data.json
 ## Examples
 
 ```bash
-# Convert and display
+# View data as table
+jsone convert users.json
+
+# Export metadata
+jsone convert data.json --format json > output.json
+
+# Pipe to other tools
+jsone convert data.json --format csv | head -10
+```
+
+## Development
+
+From the `packages/cli` directory:
+
+```bash
+# Build TypeScript to JavaScript
+npm run build
+
+# Watch for changes
+npm run watch
+
+# Link locally for testing
+npm install -g .
+
+# Test the CLI
+jsone convert ../core/__tests__/data/sample.json
+```
+
+## Features
+
+- ✅ Convert any JSON to table format
+- ✅ Export to CSV and JSON
+- ✅ Data analysis and statistics
+- ✅ Handles nested objects (dot notation)
+- ✅ Smart type detection
+- ✅ Zero dependencies (except jsone-core)
 jsone convert users.json
 
 # Export to CSV

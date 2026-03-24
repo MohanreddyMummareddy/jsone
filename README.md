@@ -166,27 +166,73 @@ ANY JSON structure works:
 
 ## Installation
 
-### NPM Package
+Choose the installation method that suits your workflow:
+
+### 📦 npm Core Library
+
+Core library for JavaScript/TypeScript projects:
 
 ```bash
-npm install @jsone/core
+npm install @mummareddy_mohanreddy/jsone-core
 ```
 
-### From Source
+### 🖥️ Command-Line Tool (npm)
+
+CLI tool to convert JSON files from terminal:
+
+```bash
+npm install -g @mummareddy_mohanreddy/jsone-cli
+```
+
+### 🐍 Python Package
+
+Python library via pip:
+
+```bash
+pip install mohanreddy-jsone
+```
+
+### 🌐 Web Viewer
+
+No installation required! Open in your browser:
+
+**https://jsone.vercel.app/**
+
+Upload any JSON or jsone file to view as table instantly.
+
+### 📝 VS Code Extension
+
+Install from VS Code Marketplace (search: "jsone")
+
+Or install from directory:
 
 ```bash
 # Clone repository
-git clone https://github.com/mummareddy/jsone.git
+git clone https://github.com/MohanreddyMummareddy/jsone.git
+cd jsone/extensions/vscode-jsone
+
+# Build and run in development mode
+npm install && npm run build
+code .
+```
+
+Press `F5` to launch the extension.
+
+### 📦 From Source
+
+```bash
+# Clone repository
+git clone https://github.com/MohanreddyMummareddy/jsone.git
 cd jsone
 
-# Install dependencies
-npm install
+# Install dependencies (monorepo with pnpm)
+pnpm install
 
 # Build all packages
-npm run build
+pnpm run build
 
 # Run tests
-npm test
+pnpm test
 ```
 
 ---
@@ -195,52 +241,115 @@ npm test
 
 ### 1. Web Viewer
 
-Upload any `.json` or `.jsone` file to view as interactive table:
+The easiest way to get started. Upload any `.json` or `.jsone` file:
+
+1. Open https://jsone.vercel.app/
+2. Click upload or drag-and-drop a JSON file
+3. Click an example to see sample data
+4. Interactive features:
+   - 🔍 Search and filter rows
+   - ↕️ Sort by column
+   - 📋 Copy data as CSV
+   - 💾 Download as `.jsone` file
+   - 🌳 Tree view for detailed inspection
+
+### 2. Command-Line Tool
+
+Convert JSON files to tables from terminal:
 
 ```bash
-# Run development server
-npm run dev:viewer
+# View as interactive table
+jsone convert data.json
 
-# Or open built version directly
-open viewer/dist/index.html
+# Export to CSV file
+jsone convert data.json --format csv --output table.csv
+
+# Export as JSON
+jsone convert data.json --format json
+
+# Analyze data statistics
+jsone analyze data.json
 ```
 
-**Features:**
-- 🔍 Search and filter rows
-- ↕️ Sort by column
-- 📋 Copy as CSV
-- 💾 Download as `.jsone` file
-- 📊 Switch between multiple tables
-- 🌳 Tree view for detailed inspection
-
-### 2. CLI
-
+**Installation:**
 ```bash
-# View as table
-jsone table data.jsone
-
-# Export to CSV
-jsone csv data.jsone -o output.csv
-
-# Validate structure
-jsone validate data.jsone
+npm install -g @mummareddy_mohanreddy/jsone-cli
 ```
 
-### 3. Node.js Library
+### 3. Python Library
 
+Use in Python scripts and notebooks:
+
+```python
+from jsone import table_from_json
+
+# Load JSON data
+users = [
+    {"name": "Alice", "age": 30, "city": "NYC"},
+    {"name": "Bob", "age": 25, "city": "LA"}
+]
+
+# Convert to table
+result = table_from_json(users)
+
+# Access data
+print(result.rows)      # List of dicts
+print(result.columns)   # Column metadata
+
+# Export formats
+csv_data = result.to_csv()   # CSV string
+json_data = result.to_json() # JSON string
+```
+
+**Installation:**
+```bash
+pip install mohanreddy-jsone
+```
+
+### 4. VS Code Extension
+
+Edit jsone files directly in VS Code with table view:
+
+1. Install "jsone" extension from Marketplace
+2. Open any `.jsone` or `.json` file
+3. Table view opens automatically
+4. Features:
+   - 🔍 Search rows
+   - ↔️ Sort columns
+   - 📋 Export to CSV
+   - 🌳 Tree view for complex data
+
+### 5. Node.js Library
+
+For JavaScript/TypeScript projects:
+
+TypeScript/ESM:
+```typescript
+import { tableFromJsone, ColumnDef } from '@mummareddy_mohanreddy/jsone-core';
+
+const data = {
+  users: [
+    { id: 1, name: "Alice", city: "Chennai" },
+    { id: 2, name: "Bob", city: "Bangalore" }
+  ]
+};
+
+const result = tableFromJsone(data.users);
+console.log(result.rows);     // [{ id: 1, name: "Alice", city: "Chennai" }, ...]
+console.log(result.columns);  // [{ key: "id", label: "id", type: "number" }, ...]
+```
+
+CommonJS:
 ```javascript
-import { parseJsone, tableFromJsone } from '@jsone/core';
+const { tableFromJsone } = require('@mummareddy_mohanreddy/jsone-core');
 
-const json = { users: [
-  { id: 1, name: "Alice" },
-  { id: 2, name: "Bob" }
-]};
+const result = tableFromJsone(data);
+console.log(result.rows);
+```
 
-const parsed = parseJsone(json);
-const table = tableFromJsone(parsed.data);
-
-console.log(table.rows);    // [{ id: 1, name: "Alice" }, ...]
-console.log(table.columns); // [{ key: "id", label: "id", type: "number" }, ...]
+**Installation:**
+```bash
+npm install @mummareddy_mohanreddy/jsone-core
 ```
 
 ---

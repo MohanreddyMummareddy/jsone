@@ -1,8 +1,20 @@
 # jsone Product Roadmap
 
-**Current Version:** 0.4.1 (Production Ready)  
+**Current Version:** 0.4.3 (Production Ready)  
 **Last Updated:** March 24, 2026  
-**Status:** Active Development
+**Status:** Active Development - Multi-platform Distribution Launched
+
+---
+
+## 📦 Distribution Channels Status (March 24, 2026)
+
+| Channel | Package | Version | Status |
+|---------|---------|---------|--------|
+| **npm Core** | `@mummareddy_mohanreddy/jsone-core` | 0.4.1 | ✅ Published |
+| **npm CLI** | `@mummareddy_mohanreddy/jsone-cli` | 0.4.3 | ✅ Published |
+| **Python pip** | `mohanreddy-jsone` | 0.4.0 | ✅ Published |
+| **Web Viewer** | jsone.vercel.app | Latest | ✅ Live |
+| **VS Code Extension** | vscode-jsone | 0.4.0 | ✅ Built (Ready for Marketplace) |
 
 ---
 
@@ -19,12 +31,11 @@
   - [ ] Document test architecture in `docs/TESTING.md`
   - [ ] Set up branch protection rules requiring passing tests
 
-**Web Viewer Production Issues (RESOLVED)**
-- ✅ Module import resolution fixed
-- ✅ Event handling implemented
-- ✅ Home button navigation working
-- ✅ Log download system in place
-- ✅ Landing page and example buttons working
+**Distribution Channels (RESOLVED)**
+- ✅ npm CLI package published as @mummareddy_mohanreddy/jsone-cli@0.4.3
+- ✅ Python package published to PyPI as mohanreddy-jsone@0.4.0
+- ✅ Web viewer live at jsone.vercel.app
+- ✅ VS Code extension packaged (0.4.0.vsix ready for Marketplace upload)
 
 ---
 
@@ -125,7 +136,172 @@ vercel deploy --prod
 - Deploy guide: docs/DEPLOYMENT.md (to create)
 
 ---
+### 1.5 Command-Line Tool (Priority: 🔴 CRITICAL) ✅ COMPLETED
 
+**Timeline:** March 24, 2026  
+**Effort:** ⭐ Low (3-4 hours)  
+**Expected Impact:** ⭐⭐⭐⭐ High
+
+**Status:** ✅ PUBLISHED TO npm
+
+**Description:**
+Standalone CLI tool for converting JSON files to tables from the terminal.
+
+**Completed Deliverables:**
+- [x] Create CLI package structure
+- [x] Implement `convert` command (table/CSV/JSON output)
+- [x] Implement `analyze` command (data statistics)
+- [x] Build TypeScript to JavaScript
+- [x] Add shebang for global install
+- [x] Publish to npm as scoped package
+- [x] Create comprehensive README
+
+**Publishing Details:**
+```
+Package: @mummareddy_mohanreddy/jsone-cli@0.4.3
+npm Link: https://www.npmjs.com/package/@mummareddy_mohanreddy/jsone-cli
+Install: npm install -g @mummareddy_mohanreddy/jsone-cli
+
+Installation & Usage:
+npm install -g @mummareddy_mohanreddy/jsone-cli
+jsone convert data.json
+jsone convert data.json --format csv --output table.csv
+jsone analyze data.json
+```
+
+**Technical Stack:**
+- TypeScript 5.3
+- Node.js CLI with shebang support
+- Dependency: @mummareddy_mohanreddy/jsone-core
+
+**Success Metrics:** ✅ Achieved
+- ✅ npm package published
+- ✅ CLI executable globally available
+- ✅ All commands working
+- ✅ CSV export tested
+
+**Resources:**
+- Source: packages/cli/
+- npm: https://www.npmjs.com/package/@mummareddy_mohanreddy/jsone-cli
+- GitHub Commit: 89d8c4e
+
+---
+
+### 1.6 Python Package (Priority: 🔴 CRITICAL) ✅ COMPLETED
+
+**Timeline:** March 24, 2026  
+**Effort:** ⭐ Low (3-4 hours)  
+**Expected Impact:** ⭐⭐⭐⭐ High
+
+**Status:** ✅ PUBLISHED TO PyPI
+
+**Description:**
+Python package enabling jsone table conversion in Python scripts and notebooks.
+
+**Completed Deliverables:**
+- [x] Create Python package structure
+- [x] Implement pure Python fallback logic
+- [x] Implement Node.js subprocess wrapper
+- [x] Create `table_from_json()` API
+- [x] Add CSV and JSON export methods
+- [x] Add file I/O utilities
+- [x] Build wheel and source distributions
+- [x] Publish to PyPI
+- [x] Create comprehensive README
+
+**Publishing Details:**
+```
+Package: mohanreddy-jsone@0.4.0
+PyPI Link: https://pypi.org/project/mohanreddy-jsone/0.4.0/
+Install: pip install mohanreddy-jsone
+
+Quick Start Example:
+from jsone import table_from_json
+data = [{"name": "Alice", "age": 30}]
+result = table_from_json(data)
+print(result.to_csv())
+```
+
+**Technical Stack:**
+- Python 3.6+
+- setuptools for packaging
+- Pure Python implementation with subprocess fallback
+- No external dependencies (Node.js optional)
+
+**Success Metrics:** ✅ Achieved
+- ✅ PyPI package published
+- ✅ pip installation working
+- ✅ All APIs functional
+- ✅ CSV export tested
+- ✅ File I/O working
+
+**Resources:**
+- Source: packages/python-jsone/
+- PyPI: https://pypi.org/project/mohanreddy-jsone/
+- GitHub Commit: ee1075c
+
+---
+
+### 1.7 VS Code Extension (Priority: 🟡 MEDIUM) ✅ BUILT
+
+**Timeline:** March 24, 2026  
+**Effort:** ⭐ Low (2-3 hours assembly)  
+**Expected Impact:** ⭐⭐⭐⭐ High
+
+**Status:** ✅ BUILT & PACKAGED - Ready for Marketplace Upload
+
+**Description:**
+VS Code extension for viewing JSON/jsone files as interactive tables directly in the editor.
+
+**Completed Deliverables:**
+- [x] Create extension project structure
+- [x] Implement custom editor webview
+- [x] Build and package as VSIX
+- [x] Create comprehensive README
+- [x] Add icon and marketplace assets
+- [x] Fix publisher configuration
+- [x] Add public access permissions
+
+**Marketplace Status:**
+```
+Extension: jsone — JSON Table Viewer
+Version: 0.4.0
+File: vscode-jsone-0.4.0.vsix (12.08 KB)
+Status: Ready for upload
+
+Features:
+✅ Table view for JSON arrays
+✅ Search and filter rows
+✅ Sortable columns
+✅ Export to CSV
+✅ Tree view fallback
+✅ Zero configuration
+```
+
+**Technical Stack:**
+- TypeScript 5.3
+- VS Code Extension API
+- Custom webview implementation
+- Dependency: @mummareddy_mohanreddy/jsone-core
+
+**Success Metrics:** ✅ Achieved
+- ✅ Extension builds without errors
+- ✅ VSIX package created successfully
+- ✅ Package includes only extension files
+- ✅ All features functional in dev mode
+
+**Resources:**
+- Source: extensions/vscode-jsone/
+- VSIX File: extensions/vscode-jsone/vscode-jsone-0.4.0.vsix
+- GitHub Commit: 89d8c4e
+
+**Next Steps for User:**
+1. Visit https://marketplace.visualstudio.com/manage/
+2. Upload vscode-jsone-0.4.0.vsix file
+3. Configure marketplace listing
+4. Publish extension
+
+---
 ### 2. GitHub Actions CI/CD Pipeline (Priority: � CRITICAL - BLOCKING)
 
 **Timeline:** Q2 2026 (Immediate - 1-2 weeks)  
