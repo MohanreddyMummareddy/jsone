@@ -210,6 +210,10 @@ function applyColumnHints(
   });
 }
 
+// Export utility modules
+export { repairJSON, validateJSON } from './repair.js';
+export { minifyJSON, prettyJSON, compactJSON, formatJSON, getFormattingStats, type FormattingOption } from './format.js';
+
 // Export types
 export type {
   ColumnDef,
