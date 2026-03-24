@@ -44,9 +44,9 @@ export function coerceToTableArray(data: any): any[] {
     });
   }
 
-  // Single object - wrap in array
+  // Single object - return empty (not a table)
   if (isPlainObject(data)) {
-    return [data];
+    return [];
   }
 
   // Primitive value - wrap in object
