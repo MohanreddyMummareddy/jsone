@@ -1,8 +1,30 @@
 # jsone Product Roadmap
 
 **Current Version:** 0.4.1 (Production Ready)  
-**Last Updated:** March 23, 2026  
+**Last Updated:** March 24, 2026  
 **Status:** Active Development
+
+---
+
+## ⚠️ Current Issues (In Progress)
+
+**GitHub Actions CI/CD Tests Failing**
+- Status: 🔴 BLOCKING
+- Issue: Test cases in `packages/core/__tests__/` are failing in GitHub Actions pipeline
+- Root Cause: Tests need to be reviewed and fixed post-web-viewer completion
+- Action Items:
+  - [ ] Review failing test cases
+  - [ ] Fix test implementations or code
+  - [ ] Ensure 100% pass rate in CI/CD
+  - [ ] Document test architecture in `docs/TESTING.md`
+  - [ ] Set up branch protection rules requiring passing tests
+
+**Web Viewer Production Issues (RESOLVED)**
+- ✅ Module import resolution fixed
+- ✅ Event handling implemented
+- ✅ Home button navigation working
+- ✅ Log download system in place
+- ✅ Landing page and example buttons working
 
 ---
 
@@ -14,25 +36,69 @@ This roadmap outlines the planned initiatives for jsone through 2026-2027. Items
 
 ## 🚀 Planned Initiatives
 
-### 1. Web Viewer Demo Site (Priority: 🔴 CRITICAL)
+### 1. Web Viewer Demo Site (Priority: 🔴 CRITICAL) ✅ COMPLETED
 
-**Timeline:** Q2 2026 (2-4 weeks)  
+**Timeline:** Q2 2026 (2-4 weeks) - COMPLETED March 24, 2026  
 **Effort:** ⭐ Low (2-4 hours)  
 **Expected Impact:** ⭐⭐⭐⭐⭐ Highest
+
+**Status:** ✅ DEPLOYED TO PRODUCTION
 
 **Description:**
 Deploy a public-facing web application where users can upload JSON files and instantly view them as tables. Zero installation required.
 
-**Deliverables:**
-- [ ] Deploy viewer/ to Vercel/Netlify
-- [ ] Create landing page with feature highlights
-- [ ] Add drag-and-drop file upload interface
-- [ ] Pre-load sample datasets (users.json, orders.json, sales.json)
-- [ ] "Try Examples" button with pre-loaded data
-- [ ] Export options (CSV, JSON, .jsone format)
-- [ ] Share URL feature (encode data in URL for sharing)
-- [ ] Analytics tracking (Google Analytics)
-- [ ] Responsive mobile design
+**Completed Deliverables:**
+- [x] Deploy viewer/ to Vercel
+- [x] Create landing page with feature highlights
+- [x] Add drag-and-drop file upload interface + example buttons
+- [x] Pre-load 4 sample datasets (users, orders, products, nested)
+- [x] "Try Examples" button with pre-loaded data
+- [x] Export options (CSV, .jsone format)
+- [x] Table, Tree, and search/sort views
+- [x] Mobile responsive design
+- [x] Comprehensive logging system
+- [x] Log download button for debugging
+- [x] Home/back navigation
+
+**Implementation Details:**
+```
+Stack:
+- Frontend: Vite 5.4.21 + TypeScript
+- Hosting: Vercel (deployed live)
+- Domain: jsone.vercel.app (or custom domain)
+- CORS: Enabled for local file uploads
+- File limit: 10MB+ supported
+
+Key Features Implemented:
+✅ Vite alias resolution for TypeScript imports
+✅ CustomEvent with fallback direct handler pattern
+✅ Event queue system for script execution ordering
+✅ Console log capture system (all logs, errors, warnings)
+✅ Download logs feature for production debugging
+✅ Home button that only shows when data is loaded
+✅ Responsive table rendering with search/sort
+✅ Multiple view modes (table/tree)
+✅ Modal for expanded cell viewing
+✅ CSV and .jsone export
+
+Known Issues Fixed:
+✅ Module import resolution (@jsone/core alias)
+✅ Script loading order (events firing before listeners ready)
+✅ Page minimization (home button navigation)
+✅ Log capture in production
+```
+
+**Metrics Achieved:**
+- ✅ Live deployment working
+- ✅ Example buttons functional
+- ✅ JSON file uploads working
+- ✅ Export to CSV working
+- ✅ Landing page displaying correctly
+
+**Resources:**
+- Deployed: https://jsone.vercel.app/ (check Vercel dashboard for URL)
+- Source: https://github.com/MohanreddyMummareddy/jsone/tree/main/viewer
+- Build with: npm install && npm run build (in /viewer)
 
 **Technical Details:**
 ```
@@ -60,22 +126,34 @@ vercel deploy --prod
 
 ---
 
-### 2. GitHub Actions CI/CD Pipeline (Priority: 🟠 HIGH)
+### 2. GitHub Actions CI/CD Pipeline (Priority: � CRITICAL - BLOCKING)
 
-**Timeline:** Q2 2026 (1-2 weeks)  
-**Effort:** ⭐⭐ Medium (2-3 hours)  
-**Expected Impact:** ⭐⭐⭐⭐ High
+**Timeline:** Q2 2026 (Immediate - 1-2 weeks)  
+**Effort:** ⭐⭐⭐ Medium-High (4-6 hours)  
+**Expected Impact:** ⭐⭐⭐⭐⭐ Critical
 
-**Description:**
-Automate testing, building, and publishing workflows to ensure code quality and reduce manual effort.
+**Status:** ⚠️ IN PROGRESS - Test failures blocking pipeline
+
+**Current Blockers:**
+- Tests in `packages/core/__tests__/` are failing in GitHub Actions
+- Pipeline needs to be set up to catch and report failures
+- No branch protection rules yet
 
 **Deliverables:**
-- [ ] Create `.github/workflows/` directory
-- [ ] `test.yml` - Run tests on PR/push
-- [ ] `build.yml` - Build all packages on commit
-- [ ] `publish.yml` - Auto-publish to npm on tag
-- [ ] `docs.yml` - Auto-generate API documentation
-- [ ] `lint.yml` - Code quality checks
+- [x] Identify failing test cases
+- [ ] Fix all test implementations
+- [ ] Create `.github/workflows/test.yml`
+- [ ] Create `.github/workflows/build.yml`
+- [ ] Create `.github/workflows/publish.yml`
+- [ ] Set up branch protection (require passing tests before merge)
+- [ ] Document debugging process in `docs/TESTING.md`
+- [ ] Add pre-commit hooks to catch issues locally
+
+**Next Steps:**
+1. **Review test failures** - Run tests locally and in CI to see exact failures
+2. **Fix test code or implementation** - Either update tests or fix the code they test
+3. **Set up GitHub Actions workflows** - Once tests pass locally, automate in CI
+4. **Enable branch protection** - Require all tests to pass before PR merge
 
 **Workflow Details:**
 
