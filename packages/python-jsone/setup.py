@@ -12,7 +12,7 @@ if os.path.exists(readme_path):
         long_description = f.read()
 
 setup(
-    name="jsone",
+    name="mohanreddy-jsone",
     version="0.4.0",
     author="Mohan Reddy Mummareddy",
     author_email="mummareddy.contact@gmail.com",

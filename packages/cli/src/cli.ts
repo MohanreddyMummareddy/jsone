@@ -2,7 +2,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { tableFromJsone } from '@mummareddy_mohanreddy/jsone-core';
+import { tableFromJsone, type ColumnDef } from '@mummareddy_mohanreddy/jsone-core';
 
 interface CliOptions {
   format: 'table' | 'csv' | 'json';
@@ -47,7 +47,8 @@ function printVersion(): void {
   console.log(`jsone-cli v${packageJson.version}`);
 }
 
-function formatAsTable(rows: any[], columns: string[]): string {
+function formatAsTable(rows: any[], columnDefs: ColumnDef[]): string {
+  const columns = columnDefs.map(c => c.key);
   if (rows.length === 0) return 'No data';
 
   const colWidths: Record<string, number> = {};
@@ -84,7 +85,8 @@ function formatAsTable(rows: any[], columns: string[]): string {
   return `${separator}\n${header}\n${separator}\n${body}\n${separator}`;
 }
 
-function formatAsCSV(rows: any[], columns: string[]): string {
+function formatAsCSV(rows: any[], columnDefs: ColumnDef[]): string {
+  const columns = columnDefs.map(c => c.key);
   const escaped = (val: any) => {
     const str = String(val ?? '');
     return str.includes(',') || str.includes('"') || str.includes('\n')
@@ -164,10 +166,11 @@ async function main(): Promise<void> {
     // Handle commands
     if (command === 'analyze') {
       const result = tableFromJsone(data);
+      const columnNames = result.columns.map(c => c.key).join(', ');
       console.log(`
 Data Analysis:
   Total rows: ${result.rows.length}
-  Columns: ${result.columns.length} (${result.columns.join(', ')})
+  Columns: ${result.columns.length} (${columnNames})
   File: ${filePath}
       `);
       process.exit(0);
