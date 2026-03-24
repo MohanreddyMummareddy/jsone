@@ -517,10 +517,15 @@
       <div class="app-section" id="appSection">
         <div class="header">
           <div style="display: flex; align-items: center; gap: 16px; justify-content: space-between; margin-bottom: 16px;">
-            <button id="homeBtn" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">
-              ← Home
-            </button>
-            <h1 style="margin: 0; flex: 1;">jsone Viewer</h1>
+            <div style="display: flex; gap: 8px;">
+              <button id="homeBtn" style="display: none; background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                ← Home
+              </button>
+              <button id="downloadLogsBtn" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                📥 Download Logs
+              </button>
+            </div>
+            <h1 style="margin: 0; flex: 1; text-align: center;">jsone Viewer</h1>
           </div>
         <div class="controls">
           <div class="file-input-wrapper">
@@ -566,7 +571,7 @@
     </div>
 
     <script>
-      // Event queue for handling events before main.ts loads
+      console.log('[HTML] Page initialized');
       console.log('[HTML] Creating event queue');
       window.__loadExampleQueue = [];
       

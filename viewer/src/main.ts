@@ -4,6 +4,36 @@
 
 console.log('[main.ts] Module loading...');
 
+// Global log capture system
+const logs: any[] = [];
+const originalLog = console.log;
+const originalError = console.error;
+const originalWarn = console.warn;
+
+// Capture all logs
+console.log = function(...args: any[]): void {
+  const timestamp = new Date().toISOString();
+  logs.push({ type: 'log', timestamp, message: args.join(' ') });
+  originalLog.apply(console, args);
+};
+
+console.error = function(...args: any[]): void {
+  const timestamp = new Date().toISOString();
+  logs.push({ type: 'error', timestamp, message: args.join(' ') });
+  originalError.apply(console, args);
+};
+
+console.warn = function(...args: any[]): void {
+  const timestamp = new Date().toISOString();
+  logs.push({ type: 'warn', timestamp, message: args.join(' ') });
+  originalWarn.apply(console, args);
+};
+
+// Make logs globally accessible
+(window as any).__JSONE_LOGS = logs;
+
+console.log('[main.ts] Log capture system initialized');
+
 import { parseJsone, tableFromJsone, findAllTableSources, type TableSource } from '@mummareddy_mohanreddy/jsone-core';
 import {
   $,
@@ -47,6 +77,7 @@ function init(): void {
   const tableSelector = $('#tableSelector');
   const downloadJsoneBtn = $('#downloadJsoneBtn');
   const homeBtn = $('#homeBtn');
+  const downloadLogsBtn = $('#downloadLogsBtn');
 
   console.log('[init] DOM elements found:', {
     fileInput: !!fileInput,
@@ -58,7 +89,8 @@ function init(): void {
     treeContainer: !!treeContainer,
     tableSelector: !!tableSelector,
     downloadJsoneBtn: !!downloadJsoneBtn,
-    homeBtn: !!homeBtn
+    homeBtn: !!homeBtn,
+    downloadLogsBtn: !!downloadLogsBtn
   });
 
   if (!fileInput) {
@@ -123,6 +155,8 @@ function init(): void {
       if (landingSection && appSection) {
         landingSection.style.display = 'flex';
         appSection.style.display = 'none';
+        // Hide home button when returning to landing
+        homeBtn.style.display = 'none';
         // Reset form
         if (fileInput) {
           fileInput.value = '';
@@ -136,6 +170,24 @@ function init(): void {
         }
         console.log('[init] Returned to landing page');
       }
+    });
+  }
+
+  // Download logs button
+  if (downloadLogsBtn) {
+    console.log('[init] Setting up download logs button');
+    on(downloadLogsBtn, 'click', () => {
+      console.log('[init] Download logs button clicked');
+      const logsData = (window as any).__JSONE_LOGS || [];
+      const logsText = logsData.map((log: any) => `[${log.timestamp}] [${log.type.toUpperCase()}] ${log.message}`).join('\n');
+      const blob = new Blob([logsText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `jsone-logs-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+      console.log('[init] Logs downloaded:', logsData.length, 'entries');
     });
   }
 
@@ -261,6 +313,22 @@ function processJsonData(jsonStr: string): void {
     console.log('[processJsonData] Starting with JSON string length:', jsonStr.length);
     console.log('[processJsonData] First 100 chars:', jsonStr.substring(0, 100));
     
+    // Show app section and home button
+    const landingSection = document.getElementById('landingSection');
+    const appSection = document.getElementById('appSection');
+    const homeBtn = document.getElementById('homeBtn');
+    
+    if (landingSection && appSection) {
+      console.log('[processJsonData] Hiding landing, showing app');
+      landingSection.style.display = 'none';
+      appSection.style.display = 'block';
+    }
+    
+    if (homeBtn) {
+      console.log('[processJsonData] Showing home button');
+      homeBtn.style.display = 'block';
+    }
+    
     const parsed = parseJsone(jsonStr);
     console.log('[processJsonData] Parsed successfully:', parsed);
     currentJsone = parsed;
@@ -332,6 +400,7 @@ function processJsonData(jsonStr: string): void {
     console.error('[processJsonData] Error:', err);
     const errMsg = err instanceof Error ? err.message : String(err);
     console.error('[processJsonData] Error message:', errMsg);
+    console.error('[processJsonData] Stack:', err instanceof Error ? err.stack : 'N/A');
     console.error('[processJsonData] Full error:', err);
     showMessage(`Error: ${errMsg}`, 'error');
   }
