@@ -215,6 +215,8 @@ export { repairJSON, validateJSON } from './repair.js';
 export { minifyJSON, prettyJSON, compactJSON, formatJSON, getFormattingStats, type FormattingOption } from './format.js';
 export { diffJSON, generateDiffReport, type DiffItem, type DiffResult } from './diff.js';
 export { jsonToYAML, yamlToJSON, validateYAML } from './yaml.js';
+export { query, getValue, setValue, type QueryResult, type PathMatch } from './jsonpath.js';
+export { validate, inferSchema, generateValidationReport, type ValidationResult, type SchemaError, type JsonSchema } from './schema.js';
 
 // Export types
 export type {
