@@ -14,7 +14,7 @@
 | **npm CLI** | `@mummareddy_mohanreddy/jsone-cli` | 0.4.3 | ✅ Published |
 | **Python pip** | `mohanreddy-jsone` | 0.4.0 | ✅ Published |
 | **Web Viewer** | jsone.vercel.app | Latest | ✅ Live |
-| **VS Code Extension** | vscode-jsone | 0.4.0 | ✅ Built (Ready for Marketplace) |
+| **VS Code Extension** | vscode-jsone | 0.4.0 | ✅ Published |
 
 ---
 
@@ -35,7 +35,7 @@
 - ✅ npm CLI package published as @mummareddy_mohanreddy/jsone-cli@0.4.3
 - ✅ Python package published to PyPI as mohanreddy-jsone@0.4.0
 - ✅ Web viewer live at jsone.vercel.app
-- ✅ VS Code extension packaged (0.4.0.vsix ready for Marketplace upload)
+- ✅ VS Code extension published (vscode-jsone@0.4.0)
 
 ---
 
@@ -242,13 +242,13 @@ print(result.to_csv())
 
 ---
 
-### 1.7 VS Code Extension (Priority: 🟡 MEDIUM) ✅ BUILT
+### 1.7 VS Code Extension (Priority: 🟡 MEDIUM) ✅ PUBLISHED
 
 **Timeline:** March 24, 2026  
 **Effort:** ⭐ Low (2-3 hours assembly)  
 **Expected Impact:** ⭐⭐⭐⭐ High
 
-**Status:** ✅ BUILT & PACKAGED - Ready for Marketplace Upload
+**Status:** ✅ PUBLISHED - Available in VS Code Marketplace
 
 **Description:**
 VS Code extension for viewing JSON/jsone files as interactive tables directly in the editor.
@@ -261,13 +261,17 @@ VS Code extension for viewing JSON/jsone files as interactive tables directly in
 - [x] Add icon and marketplace assets
 - [x] Fix publisher configuration
 - [x] Add public access permissions
+- [x] Publish to VS Code Marketplace
 
 **Marketplace Status:**
 ```
 Extension: jsone — JSON Table Viewer
 Version: 0.4.0
-File: vscode-jsone-0.4.0.vsix (12.08 KB)
-Status: Ready for upload
+Publisher: MUMMAREDDYMOHANREDDY
+Status: ✅ Published & Available
+
+Install: Search "jsone" in VS Code Marketplace
+Or: https://marketplace.visualstudio.com/items?itemName=MUMMAREDDYMOHANREDDY.jsone-viewer
 
 Features:
 ✅ Table view for JSON arrays
@@ -288,18 +292,13 @@ Features:
 - ✅ Extension builds without errors
 - ✅ VSIX package created successfully
 - ✅ Package includes only extension files
-- ✅ All features functional in dev mode
+- ✅ All features functional
+- ✅ Published to VS Code Marketplace
 
 **Resources:**
 - Source: extensions/vscode-jsone/
-- VSIX File: extensions/vscode-jsone/vscode-jsone-0.4.0.vsix
-- GitHub Commit: 89d8c4e
-
-**Next Steps for User:**
-1. Visit https://marketplace.visualstudio.com/manage/
-2. Upload vscode-jsone-0.4.0.vsix file
-3. Configure marketplace listing
-4. Publish extension
+- Marketplace: VS Code Marketplace (published)
+- GitHub Commit: 34c7ac9
 
 ---
 ### 2. GitHub Actions CI/CD Pipeline (Priority: � CRITICAL - BLOCKING)
