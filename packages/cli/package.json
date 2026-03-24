@@ -1,6 +1,6 @@
 {
-  "name": "jsone-cmd",
-  "version": "0.4.2",
+  "name": "@mummareddy_mohanreddy/jsone-cli",
+  "version": "0.4.3",
   "description": "Command-line tool to convert and analyze JSON/jsone files as tables",
   "type": "module",
   "main": "./dist/cli.js",
@@ -30,5 +30,8 @@
   "author": "Mohan Reddy Mummareddy",
   "license": "MIT",
   "repository": "https://github.com/MohanreddyMummareddy/jsone",
-  "bugs": "https://github.com/MohanreddyMummareddy/jsone/issues"
+  "bugs": "https://github.com/MohanreddyMummareddy/jsone/issues",
+  "publishConfig": {
+    "access": "public"
+  }
 }
