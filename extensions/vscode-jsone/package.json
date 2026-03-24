@@ -3,12 +3,11 @@
   "displayName": "jsone — JSON Enhanced",
   "description": "View jsone files as interactive tables with search, sort, and export",
   "version": "0.4.0",
-  "publisher": "jsone",
+  "publisher": "MUMMAREDDYMOHANREDDY",
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Viewers",
     "Other"
   ],
   "keywords": [
@@ -20,10 +19,6 @@
     "csv"
   ],
   "icon": "media/icon.png",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/jsone"
-  },
   "activationEvents": [
     "onCustomEditor:jsone.tableEditor"
   ],
@@ -65,8 +60,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "watch": "tsc --watch",
-    "vscode:prepublish": "npm run build"
+    "watch": "tsc --watch"
   },
   "dependencies": {},
   "devDependencies": {
