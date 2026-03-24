@@ -4,6 +4,7 @@ import path from 'path';
 export default defineConfig({
   resolve: {
     alias: {
+      '@jsone/core': path.resolve(__dirname, '../packages/core/src/index.ts'),
       '@mummareddy_mohanreddy/jsone-core': path.resolve(__dirname, '../packages/core/src/index.ts'),
     },
   },

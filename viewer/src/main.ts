@@ -34,7 +34,7 @@ console.warn = function(...args: any[]): void {
 
 console.log('[main.ts] Log capture system initialized');
 
-import { parseJsone, tableFromJsone, findAllTableSources, type TableSource } from '@mummareddy_mohanreddy/jsone-core';
+import { parseJsone, tableFromJsone, findAllTableSources, type TableSource } from '@jsone/core';
 import {
   $,
   on,
