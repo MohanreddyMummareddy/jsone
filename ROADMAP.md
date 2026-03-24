@@ -286,7 +286,136 @@ Week 2:
 
 ---
 
-### 4. VS Code Extension (Priority: 🟢 MEDIUM)
+### 4. Enhanced Tooling & Features (Priority: 🟡 HIGH)
+
+**Timeline:** Q3 2026 (Post-Promotion, 2-4 weeks)  
+**Effort:** ⭐⭐ Medium (8-12 hours total)  
+**Expected Impact:** ⭐⭐⭐⭐ High
+
+**Description:**
+Add powerful utility features to strengthen jsone's position against similar tools like JSONLint while maintaining focus on our unique table feature.
+
+**Deliverables:**
+
+**Phase 1 - Core Utilities (Priority 1-2)**
+- [ ] **JSON Repair/Fixer** - Auto-fix broken JSON
+  - Fix missing quotes around keys
+  - Remove trailing commas
+  - Handle single quotes
+  - Auto-add missing brackets
+  - Merge fragmented JSON strings
+  - UI: "Repair" button next to Validate
+
+- [ ] **Minify/Pretty Formatter** - Toggle between formats
+  - Minify: Remove all whitespace
+  - Pretty: Format with 2/4-space indentation
+  - UI: Toggle buttons in toolbar
+
+**Phase 2 - Comparison & Format (Priority 3-4)**
+- [ ] **Diff Tool** - Compare two JSON objects
+  - Side-by-side comparison view
+  - Highlight additions/deletions
+  - Show line-by-line changes
+  - UI: Upload two files, diff view
+
+- [ ] **Format Conversion** - YAML ↔ JSON
+  - Convert JSON to YAML
+  - Convert YAML to JSON
+  - Preserve structure and types
+  - UI: Format dropdown selector
+
+**Phase 3 - Advanced Features (Priority 5-6)**
+- [ ] **JSONPath Queries** - Filter data in tables
+  - Execute JSONPath expressions
+  - Filter table rows based on queries
+  - Save common filters
+  - UI: Query input with suggestions
+
+- [ ] **Schema Validation** - Validate against schemas
+  - JSON Schema support
+  - Custom schema input/upload
+  - Validation report
+  - UI: Schema tab in sidebar
+
+**Implementation Details:**
+
+**JSON Repair Module**
+```typescript
+// In packages/core/src/repair.ts
+export function repairJSON(input: string): string {
+  // 1. Try standard JSON.parse()
+  // 2. If fails, apply fixes:
+  //    - Remove trailing commas
+  //    - Quote unquoted keys
+  //    - Convert single quotes to double
+  //    - Auto-complete brackets
+  // 3. Return repaired string
+}
+```
+
+**Formatter Module**
+```typescript
+// In packages/core/src/format.ts
+export function minifyJSON(input: string): string {
+  return JSON.stringify(JSON.parse(input));
+}
+
+export function prettyJSON(input: string, indent = 2): string {
+  return JSON.stringify(JSON.parse(input), null, indent);
+}
+```
+
+**UI Changes**
+```html
+<!-- Add to viewer toolbar (index.html) -->
+<div class="toolbar">
+  <!-- Existing buttons -->
+  
+  <!-- New utilities -->
+  <button id="repairBtn" title="Auto-fix JSON">🔧 Repair</button>
+  <button id="minifyBtn" title="Remove whitespace">📦 Minify</button>
+  <button id="prettyBtn" title="Format nicely">✨ Pretty</button>
+  <button id="diffBtn" title="Compare JSONs">🔄 Diff</button>
+  <button id="convertBtn" title="JSON ↔ YAML">🔀 Convert</button>
+</div>
+```
+
+**Why These Features Matter:**
+1. **Repair** - Handles real-world messy data (biggest pain point)
+2. **Minify/Pretty** - Users expect format control
+3. **Diff** - Critical for debugging data changes
+4. **YAML** - Popular alt format developers use
+5. **JSONPath** - Advanced users will love querying
+6. **Schema** - Validation is standard feature
+
+**Competitive Advantage:**
+- Keep everything **PLUS** our unique table feature
+- Simpler UI than JSONLint (focused not bloated)
+- Open source vs closed tools
+- Free hosting, no sign-in required
+
+**Success Metrics:**
+- All 6 features complete and tested
+- Zero bugs in PROD
+- Positive user feedback on tool quality
+- 2000+ GitHub stars
+
+**Dependencies:**
+- For YAML: `yaml` package (1kb)
+- For JSONPath: `jsonpath-plus` or custom impl
+- For Diff: `diff-match-patch` (built-in algorithm)
+- For Repair: Custom parser (no dependencies)
+
+**Testing:**
+- Add test cases in `__tests__/utilities.test.ts`
+- Test each repair scenario (missing quotes, commas, etc.)
+- Test minify/pretty roundtrip consistency
+- Test diff accuracy with known datasets
+- Test YAML conversion bidirectionally
+
+---
+
+### 5. VS Code Extension (Priority: 🟢 MEDIUM)
 
 **Timeline:** Q3 2026 (6-8 weeks)  
 **Effort:** ⭐⭐⭐ High (8-12 hours)  
@@ -371,7 +500,7 @@ packages/vscode-extension/
 
 ---
 
-### 5. CLI Wrapper Package (Priority: 🔵 MEDIUM)
+### 6. CLI Wrapper Package (Priority: 🔵 MEDIUM)
 
 **Timeline:** Q3 2026 (6-8 weeks)  
 **Effort:** ⭐⭐⭐ High (4-6 hours)  
@@ -460,6 +589,7 @@ Q2 2026 (Apr-Jun):
   └─ Product Promotion ✅
 
 Q3 2026 (Jul-Sep):
+  ├─ Enhanced Tooling & Features (Repair, Minify, Diff, YAML, JSONPath, Schema)
   ├─ VS Code Extension
   └─ CLI Wrapper Package
 
