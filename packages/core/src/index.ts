@@ -213,6 +213,8 @@ function applyColumnHints(
 // Export utility modules
 export { repairJSON, validateJSON } from './repair.js';
 export { minifyJSON, prettyJSON, compactJSON, formatJSON, getFormattingStats, type FormattingOption } from './format.js';
+export { diffJSON, generateDiffReport, type DiffItem, type DiffResult } from './diff.js';
+export { jsonToYAML, yamlToJSON, validateYAML } from './yaml.js';
 
 // Export types
 export type {
