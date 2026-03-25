@@ -69,6 +69,9 @@ JSON is optimized for machines, not for human readability.
 ✅ **Smart Type Detection** — Automatic detection of dates, numbers, booleans  
 ✅ **Nested Object Flattening** — Dot-notation columns for hierarchical data  
 ✅ **Optional Metadata** — `$meta` for explicit control and refinement  
+✅ **Advanced JSON Tools** — Repair, format, diff, YAML conversion, JSONPath queries, schema validation  
+✅ **Circular UI Panel** — Beautiful modal with gradient icon menu for intuitive tool access  
+✅ **20+ Utility Functions** — File handling, date formatting, object cloning, array operations  
 ✅ **Backward Compatible** — Valid JSON in, valid JSON out  
 ✅ **Language Agnostic** — Works across ecosystems  
 ✅ **Static by Default** — No execution, no servers, no runtime required  
@@ -252,6 +255,13 @@ The easiest way to get started. Upload any `.json` or `.jsone` file:
    - 📋 Copy data as CSV
    - 💾 Download as `.jsone` file
    - 🌳 Tree view for detailed inspection
+5. **Advanced JSON Tools** (🧰 Utilities button):
+   - 🔧 **Repair** - Fix malformed JSON + validation
+   - 📐 **Format** - Pretty print, minify, or compact
+   - 📊 **Diff** - Compare two JSON documents
+   - 🔀 **YAML** - Convert JSON ↔ YAML
+   - 🗝️ **JSONPath** - Query with expressions
+   - ✅ **Schema** - Validate or infer schemas
 
 ### 2. Command-Line Tool
 
@@ -475,10 +485,12 @@ Use to explicitly configure table display:
 - ✅ Web viewer (with search, sort, export)
 - ✅ Universal JSON support
 - ✅ Smart type detection
+- ✅ JSON tools (Repair, Format, Diff, YAML, JSONPath, Schema)
+- ✅ Circular UI tools panel with gradient icons
+- ✅ 20+ utility functions library
 - 🔄 VS Code extension
 - 🔄 Advanced filtering
 - 🔄 Custom rendering hooks
-- 🔄 Schema validation
 
 ---
 
