@@ -34,7 +34,28 @@ console.warn = function(...args: any[]): void {
 
 console.log('[main.ts] Log capture system initialized');
 
-import { parseJsone, tableFromJsone, findAllTableSources, type TableSource } from '@jsone/core';
+import { 
+  parseJsone, 
+  tableFromJsone, 
+  findAllTableSources, 
+  type TableSource,
+  repairJSON,
+  validateJSON,
+  minifyJSON,
+  prettyJSON,
+  compactJSON,
+  formatJSON,
+  getFormattingStats,
+  diffJSON,
+  generateDiffReport,
+  jsonToYAML,
+  yamlToJSON,
+  query,
+  getValue,
+  validate,
+  inferSchema,
+  generateValidationReport
+} from '@jsone/core';
 import {
   $,
   on,
@@ -57,6 +78,7 @@ import {
   showCellModal,
   showMessage,
 } from './table';
+import { escapeHtml } from './utils';
 
 console.log('[main.ts] Imports completed successfully');
 
@@ -122,6 +144,38 @@ function init(): void {
       showMessage(`Error reading file: ${err instanceof Error ? err.message : String(err)}`, 'error');
     }
   });
+
+  // Pasted JSON handler
+  document.addEventListener('pastedJSON', (e: any) => {
+    console.log('[main.ts] Pasted JSON event received');
+    const jsonText = e.detail;
+    try {
+      processJsonData(jsonText);
+      // Show home button
+      if (homeBtn) {
+        homeBtn.style.display = 'block';
+      }
+      showMessage('JSON loaded from paste!', 'success');
+    } catch (err) {
+      console.error('[main.ts] Error processing pasted JSON:', err);
+      showMessage(`Error processing JSON: ${err instanceof Error ? err.message : String(err)}`, 'error');
+    }
+  });
+
+  // Also set up direct handler for fallback
+  (window as any).__handlePastedJSON = (jsonText: string) => {
+    console.log('[main.ts] Direct pasted JSON handler called');
+    try {
+      processJsonData(jsonText);
+      if (homeBtn) {
+        homeBtn.style.display = 'block';
+      }
+      showMessage('JSON loaded from paste!', 'success');
+    } catch (err) {
+      console.error('[main.ts] Error processing pasted JSON:', err);
+      showMessage(`Error processing JSON: ${err instanceof Error ? err.message : String(err)}`, 'error');
+    }
+  };
 
   // View toggle
   if (tableViewBtn && treeViewBtn && tableContainer && treeContainer) {
@@ -389,10 +443,17 @@ function processJsonData(jsonStr: string): void {
       }
     }
 
-    // Enable download button
+    // Enable download button and utilities
     if (downloadJsoneBtn) {
       downloadJsoneBtn.disabled = false;
       console.log('[processJsonData] Download button enabled');
+    }
+    
+    // Show utilities button
+    const utilitiesBtn = $('#utilitiesToggle') as HTMLButtonElement;
+    if (utilitiesBtn) {
+      utilitiesBtn.style.display = 'block';
+      console.log('[processJsonData] Utilities button shown');
     }
     
     console.log('[processJsonData] Processing complete');
@@ -403,6 +464,296 @@ function processJsonData(jsonStr: string): void {
     console.error('[processJsonData] Stack:', err instanceof Error ? err.stack : 'N/A');
     console.error('[processJsonData] Full error:', err);
     showMessage(`Error: ${errMsg}`, 'error');
+  }
+}
+
+// ============================================================================
+// UTILITY FUNCTIONS - UI HANDLERS
+// ============================================================================
+
+(window as any).toggleUtilities = function() {
+  console.log('[toggleUtilities] Called');
+  const modal = document.getElementById('utilitiesModal') as HTMLElement;
+  if (modal) {
+    modal.classList.toggle('active');
+    // Reset to first tab when opening
+    if (modal.classList.contains('active')) {
+      switchUtilityTab('repair');
+    }
+    console.log('[toggleUtilities] Utilities modal toggled');
+  }
+};
+
+(window as any).switchUtilityTab = function(tabName: string) {
+  console.log('[switchUtilityTab] Switching to:', tabName);
+  
+  // Show the content area
+  const contentArea = document.getElementById('utilityContentArea') as HTMLElement;
+  if (contentArea) {
+    contentArea.style.display = 'block';
+  }
+  
+  // Hide all content tabs
+  const allContent = document.querySelectorAll('.utility-content');
+  allContent.forEach(el => el.classList.remove('active'));
+  
+  // Show selected content
+  const contentEl = document.getElementById(`${tabName}-content`);
+  if (contentEl) {
+    contentEl.classList.add('active');
+  }
+};
+
+(window as any).updateFormatPreview = function() {
+  console.log('[updateFormatPreview] Called');
+  // This is called when format options change
+};
+
+(window as any).utilityRepairJSON = function() {
+  console.log('[utilityRepairJSON] Called');
+  try {
+    if (!currentJsone) {
+      showMessage('No JSON loaded', 'error');
+      return;
+    }
+    const repaired = repairJSON(JSON.stringify(currentJsone.data));
+    const resultEl = document.getElementById('repair-result');
+    if (resultEl) {
+      const parsed = JSON.parse(repaired);
+      resultEl.innerHTML = `<div class="result-box success">${escapeHtml(JSON.stringify(parsed, null, 2))}</div>`;
+      copyToClipboard(repaired).then(() => {
+        showMessage('Repaired JSON copied to clipboard!', 'success');
+      });
+    }
+  } catch (err) {
+    console.error('[utilityRepairJSON] Error:', err);
+    const resultEl = document.getElementById('repair-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box error">${escapeHtml(String(err))}</div>`;
+    }
+    showMessage(`Error: ${err instanceof Error ? err.message : String(err)}`, 'error');
+  }
+};
+
+(window as any).utilityValidateJSON = function() {
+  console.log('[utilityValidateJSON] Called');
+  try {
+    if (!currentJsone) {
+      showMessage('No JSON loaded', 'error');
+      return;
+    }
+    const validation = validateJSON(JSON.stringify(currentJsone.data));
+    const resultEl = document.getElementById('repair-result');
+    if (resultEl) {
+      const msg = validation.isValid ? '✓ Valid JSON' : '✗ Invalid JSON: ' + validation.error;
+      resultEl.innerHTML = `<div class="result-box ${validation.isValid ? 'success' : 'error'}">${msg}</div>`;
+    }
+    showMessage(validation.isValid ? 'JSON is valid!' : `Invalid: ${validation.error}`, validation.isValid ? 'success' : 'error');
+  } catch (err) {
+    console.error('[utilityValidateJSON] Error:', err);
+    showMessage(`Error: ${err instanceof Error ? err.message : String(err)}`, 'error');
+  }
+};
+
+(window as any).utilityFormatJSON = function() {
+  console.log('[utilityFormatJSON] Called');
+  try {
+    if (!currentJsone) {
+      showMessage('No JSON loaded', 'error');
+      return;
+    }
+    const formatType = (document.getElementById('formatType') as HTMLSelectElement)?.value || 'pretty';
+    const indent = parseInt((document.getElementById('formatIndent') as HTMLInputElement)?.value || '2');
+    
+    let formatted: string;
+    const jsonStr = JSON.stringify(currentJsone.data);
+    
+    if (formatType === 'pretty') {
+      formatted = prettyJSON(jsonStr, { indent });
+    } else if (formatType === 'minify') {
+      formatted = minifyJSON(jsonStr);
+    } else {
+      formatted = compactJSON(jsonStr);
+    }
+    
+    const resultEl = document.getElementById('format-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box success">${escapeHtml(formatted)}</div>`;
+      copyToClipboard(formatted).then(() => {
+        showMessage('Formatted JSON copied to clipboard!', 'success');
+      });
+    }
+  } catch (err) {
+    console.error('[utilityFormatJSON] Error:', err);
+    const resultEl = document.getElementById('format-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box error">${escapeHtml(String(err))}</div>`;
+    }
+  }
+};
+
+(window as any).utilityDiffJSON = function() {
+  console.log('[utilityDiffJSON] Called');
+  try {
+    if (!currentJsone) {
+      showMessage('No JSON loaded', 'error');
+      return;
+    }
+    const diffText = (document.getElementById('diffJson2') as HTMLTextAreaElement)?.value;
+    if (!diffText) {
+      showMessage('Please paste JSON to compare', 'error');
+      return;
+    }
+    
+    const diff = diffJSON(JSON.stringify(currentJsone.data), diffText);
+    const report = generateDiffReport(diff);
+    const resultEl = document.getElementById('diff-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box success"><pre>${escapeHtml(report)}</pre></div>`;
+      copyToClipboard(report).then(() => {
+        showMessage('Diff report copied!', 'success');
+      });
+    }
+  } catch (err) {
+    console.error('[utilityDiffJSON] Error:', err);
+    const resultEl = document.getElementById('diff-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box error">${escapeHtml(String(err))}</div>`;
+    }
+  }
+};
+
+(window as any).utilityJsonToYAML = function() {
+  console.log('[utilityJsonToYAML] Called');
+  try {
+    if (!currentJsone) {
+      showMessage('No JSON loaded', 'error');
+      return;
+    }
+    const yaml = jsonToYAML(JSON.stringify(currentJsone.data));
+    const resultEl = document.getElementById('yaml-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box success"><pre>${escapeHtml(yaml)}</pre></div>`;
+      copyToClipboard(yaml).then(() => {
+        showMessage('YAML copied to clipboard!', 'success');
+      });
+    }
+  } catch (err) {
+    console.error('[utilityJsonToYAML] Error:', err);
+    const resultEl = document.getElementById('yaml-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box error">${escapeHtml(String(err))}</div>`;
+    }
+  }
+};
+
+(window as any).utilityYAMLToJSON = function() {
+  console.log('[utilityYAMLToJSON] Called');
+  try {
+    const yamlInput = prompt('Paste your YAML here:');
+    if (!yamlInput) return;
+    
+    const json = yamlToJSON(yamlInput);
+    const resultEl = document.getElementById('yaml-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box success"><pre>${escapeHtml(JSON.stringify(JSON.parse(json), null, 2))}</pre></div>`;
+      copyToClipboard(json).then(() => {
+        showMessage('JSON copied to clipboard!', 'success');
+      });
+    }
+  } catch (err) {
+    console.error('[utilityYAMLToJSON] Error:', err);
+    const resultEl = document.getElementById('yaml-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box error">${escapeHtml(String(err))}</div>`;
+    }
+  }
+};
+
+(window as any).utilityQueryJSON = function() {
+  console.log('[utilityQueryJSON] Called');
+  try {
+    if (!currentJsone) {
+      showMessage('No JSON loaded', 'error');
+      return;
+    }
+    const exprInput = (document.getElementById('jsonpathExpr') as HTMLInputElement)?.value;
+    if (!exprInput) {
+      showMessage('Please enter a JSONPath expression', 'error');
+      return;
+    }
+    
+    const result = query(currentJsone.data, exprInput);
+    const resultEl = document.getElementById('jsonpath-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box success"><pre>${escapeHtml(JSON.stringify(result, null, 2))}</pre></div>`;
+      copyToClipboard(JSON.stringify(result)).then(() => {
+        showMessage('Query result copied!', 'success');
+      });
+    }
+  } catch (err) {
+    console.error('[utilityQueryJSON] Error:', err);
+    const resultEl = document.getElementById('jsonpath-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box error">${escapeHtml(String(err))}</div>`;
+    }
+  }
+};
+
+(window as any).utilityValidateSchema = function() {
+  console.log('[utilityValidateSchema] Called');
+  try {
+    if (!currentJsone) {
+      showMessage('No JSON loaded', 'error');
+      return;
+    }
+    const schemaText = (document.getElementById('schemaPaste') as HTMLTextAreaElement)?.value;
+    if (!schemaText) {
+      showMessage('Please paste a JSON schema', 'error');
+      return;
+    }
+    
+    const schema = JSON.parse(schemaText);
+    const validation = validate(currentJsone.data, schema);
+    const resultEl = document.getElementById('schema-result');
+    if (resultEl) {
+      const report = generateValidationReport(validation);
+      resultEl.innerHTML = `<div class="result-box ${validation.valid ? 'success' : 'error'}"><pre>${escapeHtml(report)}</pre></div>`;
+      copyToClipboard(report).then(() => {
+        showMessage(validation.valid ? 'Validation passed!' : 'Validation failed', validation.valid ? 'success' : 'error');
+      });
+    }
+  } catch (err) {
+    console.error('[utilityValidateSchema] Error:', err);
+    const resultEl = document.getElementById('schema-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box error">${escapeHtml(String(err))}</div>`;
+    }
+  }
+};
+
+(window as any).utilityInferSchema = function() {
+  console.log('[utilityInferSchema] Called');
+  try {
+    if (!currentJsone) {
+      showMessage('No JSON loaded', 'error');
+      return;
+    }
+    
+    const schema = inferSchema(currentJsone.data);
+    const resultEl = document.getElementById('schema-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box success"><pre>${escapeHtml(JSON.stringify(schema, null, 2))}</pre></div>`;
+      copyToClipboard(JSON.stringify(schema)).then(() => {
+        showMessage('Schema inferred and copied!', 'success');
+      });
+    }
+  } catch (err) {
+    console.error('[utilityInferSchema] Error:', err);
+    const resultEl = document.getElementById('schema-result');
+    if (resultEl) {
+      resultEl.innerHTML = `<div class="result-box error">${escapeHtml(String(err))}</div>`;
+    }
   }
 }
 
@@ -442,3 +793,6 @@ while (queue.length > 0) {
   handleLoadExample(customEvent.detail);
 }
 console.log('[main.ts] All queued events processed');
+
+// Import utility functions
+export * from './utils';
